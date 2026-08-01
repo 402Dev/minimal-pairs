@@ -55,18 +55,27 @@ fallback otherwise. There is no build-time switch; it's a runtime check.
 3. **`SpeakerIntakeForm.tsx`** — the *only* identification mechanism in
    the app. No passwords, no email, no accounts. It asks for:
    - **Name**
-   - **Favorite Iranian food**
+   - **Last two digits of birth year (Persian/Solar Hijri calendar)**
 
    These two strings are used as a **natural composite key**
    (`findOrCreateSpeaker` in [src/lib/speakers.ts](src/lib/speakers.ts)):
    on submit, it looks up an existing `speakers` row with a matching
-   name + food (trimmed, case-insensitive) before creating a new one. So
-   the *same person* typing the same name+food on a different device/
-   browser is recognized as the same speaker — it's not just a
-   localStorage flag, it's a real dedup lookup against the DB.
+   name + birth year (trimmed, case-insensitive) before creating a new
+   one. So the *same person* typing the same name+birth-year on a
+   different device/browser is recognized as the same speaker — it's not
+   just a localStorage flag, it's a real dedup lookup against the DB.
    `speaker_id` is **global**, not scoped per language — a speaker who
    onboards on `/Persian` is already "known" on `/German` in the same
-   browser (and via the name+food lookup, on any browser).
+   browser (and via the name+birth-year lookup, on any browser).
+
+   As the visitor types their name (2+ characters), the form also calls
+   `searchSpeakersByName` and shows a short "Is this you?" list of
+   existing speakers whose name partially matches — tapping one signs
+   them in immediately via that speaker's id, skipping the birth-year
+   field entirely. This is the "pick yourself instead of retyping"
+   shortcut; it's purely a UX convenience (case-insensitive substring
+   match, capped to 8 results) and doesn't change the underlying identity
+   model.
 
 4. **`RecorderForm.tsx`** — the sequential recording loop. State machine:
 
@@ -115,7 +124,7 @@ Three tables, same shape in both Supabase and the local SQLite fallback:
 
 | Table        | Columns                                                              | Notes |
 |--------------|------------------------------------------------------------------------|-------|
-| `speakers`   | `id` (uuid), `created_at`, `name`, `favorite_food`                     | Unique index on `lower(trim(name)), lower(trim(favorite_food))` |
+| `speakers`   | `id` (uuid), `created_at`, `name`, `birth_year`                     | Unique index on `lower(trim(name)), lower(trim(birth_year))` |
 | `prompts`    | `id` (uuid), `language`, `word_or_phrase`, `sequence_order`            | **This is the table you edit to add real words** |
 | `recordings` | `id` (uuid), `speaker_id` (FK), `prompt_id` (FK), `audio_path`, `created_at` | One row per saved take. Unique index on `(speaker_id, prompt_id)` — a speaker can never record the same prompt twice |
 
@@ -299,7 +308,8 @@ src/app/
 src/components/
   LanguageSession.tsx           soft-auth gate (intake form vs recorder); also fetches
                                  and filters out already-recorded prompts for this speaker
-  SpeakerIntakeForm.tsx         name + favorite Iranian food → speaker_id
+  SpeakerIntakeForm.tsx         name + birth year (Persian calendar) → speaker_id;
+                                 also offers a "pick yourself" list of name matches
   RecorderForm.tsx              the whole recording state machine + all sub-UI
   Waveform.tsx                  canvas waveform, driven by requestAnimationFrame
   admin/AdminLoginForm.tsx       password field, posts to /api/admin/login
@@ -357,9 +367,9 @@ npm run dev            # http://localhost:3000, or pass -p <port>
 
 - **`speaker_id` is global, not per-language.** A speaker who onboards on
   `/Persian` is auto-recognized on `/German` too (same browser or same
-  name+food pair anywhere). This matches the literal soft-auth spec but
-  means one speaker's "favorite food" identity is reused across languages
-  they might not natively speak.
+  name+birth-year pair anywhere). This matches the literal soft-auth spec
+  but means one speaker's identity is reused across languages they might
+  not natively speak.
 - **The admin session is a single shared password, not per-user
   accounts.** `ADMIN_PASSWORD` grants full read/write/delete access to
   everything. Fine for a one-operator internal tool; not intended as a
@@ -379,9 +389,24 @@ npm run dev            # http://localhost:3000, or pass -p <port>
   gone (Supabase) — and throw a distinguishable `InvalidSpeakerError`
   instead of letting a raw `500`/FK error reach the user. `RecorderForm`
   catches this and calls `onInvalidSpeaker`, which `LanguageSession` wires
-  up to clear the bad id from `localStorage` and fall back to the
-  name/favorite-food intake form so the visitor can simply re-onboard and
-  keep going.
+  up to clear the bad id from `localStorage` and fall back to the intake
+  form so the visitor can simply re-onboard and keep going. Note: an
+  in-progress recording that hits this mid-save is discarded (the visitor
+  starts that prompt over after re-onboarding).
+  `LanguageSession` also checks this proactively on every page load, before
+  the recorder is shown at all: `speakerExists()` (`lib/speakers.ts`)
+  confirms the stored id still has a row. This matters because the
+  "already recorded" lookup (`getCompletedPromptIds`) simply returns an
+  empty set for a nonexistent speaker — that's a valid response, not an
+  error, so it would never trip the fail-open catch below it and would
+  silently show every prompt as unfinished (including ones a *previous*
+  speaker at that id had already completed). Checking existence up front
+  closes that gap.
+- **"Pick yourself from a list" is a convenience, not real auth.** The
+  name-match list in `SpeakerIntakeForm` lets anyone impersonate any
+  existing speaker by name alone (no birth-year check on that path). This
+  is intentional for a frictionless, low-stakes data-collection tool —
+  don't rely on it for anything security-sensitive.
 
 ---
 
@@ -394,7 +419,7 @@ the public app, and marked `noindex`) gives full control over every table:
   new — just type the language name), click a word to edit it inline, or
   delete it.
 - **Recordings tab** — every recording ever submitted, with the speaker's
-  name/food, the prompt's word/language, an inline `<audio>` player, and a
+  name/birth year, the prompt's word/language, an inline `<audio>` player, and a
   delete button (also removes the underlying audio file from disk/Storage).
 - **Speakers tab** — every speaker with their recording count, and a
   delete button.

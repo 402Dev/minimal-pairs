@@ -13,28 +13,35 @@
 -- used to be identified by `native_language`/`dialect_or_region`.
 
 -- 1. Speakers -----------------------------------------------------------
--- Identified by "name" + "favorite Iranian food" instead of a password:
--- a memorable, frictionless pair that doubles as a natural unique key so
--- the same person is recognized as a returning speaker on any device.
+-- Identified by "name" + the last two digits of their birth year in the
+-- Persian (Solar Hijri) calendar instead of a password: a memorable,
+-- frictionless pair that doubles as a natural unique key so the same
+-- person is recognized as a returning speaker on any device.
 create table if not exists public.speakers (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz not null default now(),
   name text not null,
-  favorite_food text not null
+  birth_year text not null
 );
 
--- Migration for installs created before the name/favorite_food schema.
+-- Migration for installs created before the name/birth_year schema.
 alter table public.speakers add column if not exists name text;
-alter table public.speakers add column if not exists favorite_food text;
+alter table public.speakers add column if not exists birth_year text;
 alter table public.speakers drop column if exists native_language;
 alter table public.speakers drop column if exists dialect_or_region;
+-- Migration for installs created with the older favorite_food column.
+alter table public.speakers add column if not exists favorite_food text;
+update public.speakers set birth_year = favorite_food
+  where birth_year is null and favorite_food is not null;
+alter table public.speakers drop column if exists favorite_food;
 alter table public.speakers alter column name set not null;
-alter table public.speakers alter column favorite_food set not null;
+alter table public.speakers alter column birth_year set not null;
 
--- Case-insensitive uniqueness so "Sara" + "Fesenjan" always resolves to
--- the same speaker regardless of casing/whitespace typed at intake.
-create unique index if not exists speakers_name_food_key
-  on public.speakers (lower(trim(name)), lower(trim(favorite_food)));
+-- Case-insensitive uniqueness so "Sara" + "72" always resolves to the
+-- same speaker regardless of casing/whitespace typed at intake.
+drop index if exists speakers_name_food_key;
+create unique index if not exists speakers_name_birth_year_key
+  on public.speakers (lower(trim(name)), lower(trim(birth_year)));
 
 alter table public.speakers enable row level security;
 
@@ -46,7 +53,8 @@ create policy "Public insert speakers" on public.speakers
   with check (true);
 
 -- Readable so the client can look up an existing speaker by name +
--- favorite food before creating a new one (returning-visitor lookup).
+-- birth year before creating a new one, and so it can list name matches
+-- for the "pick yourself from a list" returning-visitor shortcut.
 drop policy if exists "Public read speakers" on public.speakers;
 create policy "Public read speakers" on public.speakers
   for select

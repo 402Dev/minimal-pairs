@@ -17,7 +17,7 @@ interface LocalRecordingRow {
   speaker_id: string;
   prompt_id: string;
   speaker_name: string;
-  speaker_food: string;
+  speaker_birth_year: string;
   language: string;
   word_or_phrase: string;
 }
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
       .from(RECORDINGS_TABLE)
       .select(
         `id, audio_path, created_at,
-         speaker:${SPEAKERS_TABLE}(id, name, favorite_food),
+         speaker:${SPEAKERS_TABLE}(id, name, birth_year),
          prompt:${PROMPTS_TABLE}(id, language, word_or_phrase)`
       )
       .order("created_at", { ascending: false });
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
         id: row.id,
         createdAt: row.created_at,
         audioUrl: admin.storage.from(AUDIO_BUCKET).getPublicUrl(row.audio_path).data.publicUrl,
-        speaker: speaker ? { id: speaker.id, name: speaker.name, favoriteFood: speaker.favorite_food } : null,
+        speaker: speaker ? { id: speaker.id, name: speaker.name, birthYear: speaker.birth_year } : null,
         prompt: prompt ? { id: prompt.id, language: prompt.language, wordOrPhrase: prompt.word_or_phrase } : null,
       };
     });
@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
   const rows = db
     .prepare(
       `SELECT r.id, r.audio_path, r.created_at, r.speaker_id, r.prompt_id,
-              s.name as speaker_name, s.favorite_food as speaker_food,
+              s.name as speaker_name, s.birth_year as speaker_birth_year,
               p.language as language, p.word_or_phrase as word_or_phrase
        FROM recordings r
        JOIN speakers s ON s.id = r.speaker_id
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
     id: row.id,
     createdAt: row.created_at,
     audioUrl: row.audio_path,
-    speaker: { id: row.speaker_id, name: row.speaker_name, favoriteFood: row.speaker_food },
+    speaker: { id: row.speaker_id, name: row.speaker_name, birthYear: row.speaker_birth_year },
     prompt: { id: row.prompt_id, language: row.language, wordOrPhrase: row.word_or_phrase },
   }));
 

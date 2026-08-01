@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   if (supabaseAdmin) {
     const [{ data: speakers, error: speakersError }, { data: recordings, error: recordingsError }] =
       await Promise.all([
-        supabaseAdmin.from(SPEAKERS_TABLE).select("id, name, favorite_food, created_at"),
+        supabaseAdmin.from(SPEAKERS_TABLE).select("id, name, birth_year, created_at"),
         supabaseAdmin.from(RECORDINGS_TABLE).select("speaker_id"),
       ]);
 
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
       .map((speaker) => ({
         id: speaker.id,
         name: speaker.name,
-        favoriteFood: speaker.favorite_food,
+        birthYear: speaker.birth_year,
         createdAt: speaker.created_at,
         recordingCount: counts.get(speaker.id) ?? 0,
       }))
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
   const db = getLocalDb();
   const speakers = db
     .prepare(
-      `SELECT s.id, s.name, s.favorite_food, s.created_at,
+      `SELECT s.id, s.name, s.birth_year, s.created_at,
               (SELECT COUNT(*) FROM recordings r WHERE r.speaker_id = s.id) as recording_count
        FROM speakers s
        ORDER BY s.created_at DESC`
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
     .all() as {
     id: string;
     name: string;
-    favorite_food: string;
+    birth_year: string;
     created_at: string;
     recording_count: number;
   }[];
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
     speakers: speakers.map((s) => ({
       id: s.id,
       name: s.name,
-      favoriteFood: s.favorite_food,
+      birthYear: s.birth_year,
       createdAt: s.created_at,
       recordingCount: s.recording_count,
     })),

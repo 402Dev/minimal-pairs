@@ -6,7 +6,7 @@ import { Trash2 } from "lucide-react";
 interface AdminSpeaker {
   id: string;
   name: string;
-  favoriteFood: string;
+  birthYear: string;
   createdAt: string;
   recordingCount: number;
 }
@@ -62,7 +62,7 @@ export default function SpeakersPanel() {
           {speakers.map((speaker) => (
             <li key={speaker.id} className="flex items-center gap-4 py-3 text-sm">
               <div className="min-w-[8rem] font-medium">{speaker.name}</div>
-              <div className="min-w-[8rem] text-xs text-neutral-500">{speaker.favoriteFood}</div>
+              <div className="min-w-[8rem] text-xs text-neutral-500">{speaker.birthYear}</div>
               <div className="text-xs text-neutral-400">{speaker.recordingCount} recordings</div>
               <span className="flex-1 text-right text-xs text-neutral-400">
                 {new Date(speaker.createdAt).toLocaleString()}

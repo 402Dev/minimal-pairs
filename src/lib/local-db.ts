@@ -5,7 +5,7 @@ import path from "path";
 /**
  * Local SQLite fallback used only when Supabase env vars are not set.
  * Mirrors the Supabase Postgres schema (see ../../supabase.sql):
- *   speakers   — id, created_at, name, favorite_food
+ *   speakers   — id, created_at, name, birth_year
  *   prompts    — id, language, word_or_phrase, sequence_order
  *   recordings — id, speaker_id, prompt_id, audio_path, created_at
  */
@@ -49,11 +49,11 @@ export function getLocalDb(): Database.Database {
         id TEXT PRIMARY KEY,
         created_at TEXT NOT NULL DEFAULT (datetime('now')),
         name TEXT NOT NULL,
-        favorite_food TEXT NOT NULL
+        birth_year TEXT NOT NULL
       );
 
-      CREATE UNIQUE INDEX IF NOT EXISTS speakers_name_food_key
-        ON speakers (lower(trim(name)), lower(trim(favorite_food)));
+      CREATE UNIQUE INDEX IF NOT EXISTS speakers_name_birth_year_key
+        ON speakers (lower(trim(name)), lower(trim(birth_year)));
 
       CREATE TABLE IF NOT EXISTS prompts (
         id TEXT PRIMARY KEY,

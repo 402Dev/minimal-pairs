@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { findOrCreateSpeaker } from "@/lib/speakers";
+import { useEffect, useState } from "react";
+import { findOrCreateSpeaker, searchSpeakersByName, type SpeakerMatch } from "@/lib/speakers";
 import { setStoredSpeakerId } from "@/lib/session";
 import { getTranslation } from "@/lib/i18n";
 
@@ -11,19 +11,55 @@ interface SpeakerIntakeFormProps {
 }
 
 /**
- * Frictionless soft-auth: name + favorite Iranian food, typed once, is
- * used as a natural unique key to recognize a returning speaker (see
- * findOrCreateSpeaker). No passwords, no accounts. All copy is shown in
- * the visitor's own (native) language.
+ * Frictionless soft-auth: name + the last two digits of your birth year
+ * (Persian calendar), typed once, is used as a natural unique key to
+ * recognize a returning speaker (see findOrCreateSpeaker). No passwords,
+ * no accounts. All copy is shown in the visitor's own (native) language.
+ *
+ * As the visitor types their name, matching existing speakers are shown
+ * below the field — tapping one signs them in immediately, so a returning
+ * visitor never has to retype anything.
  */
 export default function SpeakerIntakeForm({ language, onComplete }: SpeakerIntakeFormProps) {
   const t = getTranslation(language);
   const [name, setName] = useState("");
-  const [favoriteFood, setFavoriteFood] = useState("");
+  const [birthYear, setBirthYear] = useState("");
+  const [matches, setMatches] = useState<SpeakerMatch[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const canStart = name.trim().length > 0 && favoriteFood.trim().length > 0 && !submitting;
+  const canStart = name.trim().length > 0 && /^\d{2}$/.test(birthYear.trim()) && !submitting;
+  // Only show matches while the name field still qualifies for a lookup;
+  // avoids clearing `matches` synchronously inside the effect below.
+  const visibleMatches = name.trim().length >= 2 ? matches : [];
+
+  // Debounced returning-visitor lookup by name, so the list of matches
+  // stays cheap and doesn't race ahead of typing.
+  useEffect(() => {
+    const query = name.trim();
+    if (query.length < 2) return;
+
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      searchSpeakersByName(query)
+        .then((results) => {
+          if (!cancelled) setMatches(results);
+        })
+        .catch(() => {
+          if (!cancelled) setMatches([]);
+        });
+    }, 250);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [name]);
+
+  const handlePickMatch = (speakerId: string) => {
+    setStoredSpeakerId(speakerId);
+    onComplete(speakerId);
+  };
 
   const handleStart = async () => {
     if (!canStart) return;
@@ -33,7 +69,7 @@ export default function SpeakerIntakeForm({ language, onComplete }: SpeakerIntak
     try {
       const speakerId = await findOrCreateSpeaker({
         name: name.trim(),
-        favoriteFood: favoriteFood.trim(),
+        birthYear: birthYear.trim(),
       });
       setStoredSpeakerId(speakerId);
       onComplete(speakerId);
@@ -72,20 +108,44 @@ export default function SpeakerIntakeForm({ language, onComplete }: SpeakerIntak
               />
             </label>
 
+            {visibleMatches.length > 0 && !submitting && (
+              <div className="space-y-2">
+                <span className="block text-xs font-medium uppercase tracking-widest text-neutral-400">
+                  {t.isThisYou}
+                </span>
+                <ul className="space-y-1">
+                  {visibleMatches.map((match) => (
+                    <li key={match.id}>
+                      <button
+                        type="button"
+                        onClick={() => handlePickMatch(match.id)}
+                        className="flex w-full items-center justify-between rounded-lg border border-neutral-200 px-4 py-3 text-left text-lg text-neutral-900 transition-colors active:bg-neutral-100"
+                      >
+                        <span>{match.name}</span>
+                        <span className="text-neutral-400">{match.birthYear}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             <label className="block">
               <span className="mb-1 block text-xs font-medium uppercase tracking-widest text-neutral-400">
-                {t.favoriteFoodQuestion}
+                {t.birthYearQuestion}
               </span>
               <input
                 type="text"
-                value={favoriteFood}
-                onChange={(e) => setFavoriteFood(e.target.value)}
+                inputMode="numeric"
+                maxLength={2}
+                value={birthYear}
+                onChange={(e) => setBirthYear(e.target.value.replace(/\D/g, "").slice(0, 2))}
                 onKeyDown={(e) => e.key === "Enter" && handleStart()}
                 disabled={submitting}
                 autoComplete="off"
                 autoCorrect="off"
                 spellCheck={false}
-                className="w-full border-0 border-b-2 border-neutral-200 bg-transparent py-2 text-2xl font-medium text-neutral-900 placeholder-neutral-300 outline-none transition-colors focus:border-neutral-900 disabled:opacity-40"
+                className="w-full border-0 border-b-2 border-neutral-200 bg-transparent py-2 text-2xl font-medium tracking-widest text-neutral-900 placeholder-neutral-300 outline-none transition-colors focus:border-neutral-900 disabled:opacity-40"
               />
             </label>
           </div>

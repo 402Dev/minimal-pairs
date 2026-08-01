@@ -7,7 +7,7 @@ interface AdminRecording {
   id: string;
   createdAt: string;
   audioUrl: string;
-  speaker: { id: string; name: string; favoriteFood: string } | null;
+  speaker: { id: string; name: string; birthYear: string } | null;
   prompt: { id: string; language: string; wordOrPhrase: string } | null;
 }
 
@@ -68,7 +68,7 @@ export default function RecordingsPanel() {
               <div className="min-w-[8rem] text-xs text-neutral-500">
                 {recording.speaker?.name ?? "—"}
                 <span className="text-neutral-300"> · </span>
-                {recording.speaker?.favoriteFood ?? "—"}
+                {recording.speaker?.birthYear ?? "—"}
               </div>
               <audio controls src={recording.audioUrl} className="h-8 flex-1 min-w-[12rem]" />
               <span className="text-xs text-neutral-400">

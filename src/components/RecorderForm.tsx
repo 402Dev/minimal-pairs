@@ -14,6 +14,8 @@ interface RecorderFormProps {
   language: string;
   prompts: Prompt[];
   speakerId: string;
+  speakerName?: string | null;
+  initialCompletedCount?: number;
   /**
    * Called when the server reports that this speakerId no longer exists
    * (e.g. deleted via the admin panel, or a stale localStorage value
@@ -27,12 +29,17 @@ export default function RecorderForm({
   language,
   prompts,
   speakerId,
+  speakerName,
+  initialCompletedCount = 0,
   onInvalidSpeaker,
 }: RecorderFormProps) {
   const t = getTranslation(language);
   const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
+  const [savedCount, setSavedCount] = useState(0);
   const [phase, setPhase] = useState<Phase>("idle");
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const completedCount = initialCompletedCount + savedCount;
 
   const { status, audioBlob, mimeType, error, start, stop, reset, getWaveformData } =
     useAudioRecorder();
@@ -72,6 +79,7 @@ export default function RecorderForm({
     submitRecording({ audioBlob, mimeType, speakerId, promptId: currentPrompt.id })
       .then(() => {
         setPhase("success");
+        setSavedCount((prev) => prev + 1);
         setTimeout(() => {
           setCurrentPromptIndex((index) => index + 1);
           setPhase("idle");
@@ -90,22 +98,48 @@ export default function RecorderForm({
 
   if (prompts.length === 0) {
     return (
-      <CenteredMessage endonym={t.endonym} message={t.noPromptsAvailable(t.endonym)} />
+      <CenteredMessage
+        endonym={t.endonym}
+        message={t.noPromptsAvailable(t.endonym)}
+        speakerName={speakerName}
+        completedCount={completedCount}
+        t={t}
+      />
     );
   }
 
   if (currentPromptIndex >= prompts.length) {
-    return <CenteredMessage endonym={t.endonym} message={t.allDone} />;
+    return (
+      <CenteredMessage
+        endonym={t.endonym}
+        message={t.allDone}
+        speakerName={speakerName}
+        completedCount={completedCount}
+        t={t}
+      />
+    );
   }
 
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center bg-white px-6">
       <div className="w-full max-w-xs">
-        <div className="space-y-10">
-          <div className="space-y-1 text-center">
-            <span className="text-xs font-medium uppercase tracking-widest text-neutral-400">
-              {t.endonym} · {currentPromptIndex + 1}/{prompts.length}
-            </span>
+        <div className="space-y-8">
+          <div className="space-y-2 text-center">
+            {speakerName && (
+              <div className="space-y-0.5">
+                <p className="text-xs font-normal text-neutral-500">
+                  {t.welcomeThankYou(speakerName)}
+                </p>
+                <p className="text-[11px] font-medium text-neutral-400">
+                  {t.recordedCount(completedCount)}
+                </p>
+              </div>
+            )}
+            <div>
+              <span className="text-xs font-medium uppercase tracking-widest text-neutral-400">
+                {t.endonym} · {currentPromptIndex + 1}/{prompts.length}
+              </span>
+            </div>
           </div>
 
           <PromptDisplay word={currentPrompt.word_or_phrase} />
@@ -142,14 +176,40 @@ function PromptDisplay({ word }: { word: string }) {
   );
 }
 
-function CenteredMessage({ endonym, message }: { endonym: string; message: string }) {
+function CenteredMessage({
+  endonym,
+  message,
+  speakerName,
+  completedCount,
+  t,
+}: {
+  endonym: string;
+  message: string;
+  speakerName?: string | null;
+  completedCount?: number;
+  t: Translation;
+}) {
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center bg-white px-6">
-      <div className="w-full max-w-xs space-y-2 text-center">
-        <span className="text-xs font-medium uppercase tracking-widest text-neutral-400">
-          {endonym}
-        </span>
-        <p className="text-2xl font-medium text-neutral-900">{message}</p>
+      <div className="w-full max-w-xs space-y-4 text-center">
+        {speakerName && (
+          <div className="space-y-0.5">
+            <p className="text-xs font-normal text-neutral-500">
+              {t.welcomeThankYou(speakerName)}
+            </p>
+            {completedCount !== undefined && (
+              <p className="text-[11px] font-medium text-neutral-400">
+                {t.recordedCount(completedCount)}
+              </p>
+            )}
+          </div>
+        )}
+        <div>
+          <span className="text-xs font-medium uppercase tracking-widest text-neutral-400">
+            {endonym}
+          </span>
+          <p className="mt-1 text-2xl font-medium text-neutral-900">{message}</p>
+        </div>
       </div>
     </div>
   );

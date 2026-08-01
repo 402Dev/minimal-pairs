@@ -7,11 +7,14 @@ export interface Translation {
   /** How the language refers to itself, shown in the header badge. */
   endonym: string;
   yourName: string;
-  favoriteFoodQuestion: string;
+  birthYearQuestion: string;
+  isThisYou: string;
   start: string;
   starting: string;
   allDone: string;
   noPromptsAvailable: (endonym: string) => string;
+  welcomeThankYou: (name: string) => string;
+  recordedCount: (count: number) => string;
   tapToRecord: string;
   recordingTapToStop: string;
   saving: string;
@@ -29,11 +32,14 @@ export interface Translation {
 const english: Translation = {
   endonym: "English",
   yourName: "Your name",
-  favoriteFoodQuestion: "What's your favorite Iranian food?",
+  birthYearQuestion: "Last two digits of your birth year (Persian calendar)",
+  isThisYou: "Is this you?",
   start: "Start",
   starting: "Starting…",
   allDone: "All done. Thank you.",
   noPromptsAvailable: (endonym) => `No words available for ${endonym}.`,
+  welcomeThankYou: (name) => `Welcome, ${name}. Thank you for sharing your voice.`,
+  recordedCount: (count) => `${count} ${count === 1 ? "recording" : "recordings"} so far`,
   tapToRecord: "Tap to record",
   recordingTapToStop: "Recording — tap to stop",
   saving: "Saving…",
@@ -51,11 +57,14 @@ const english: Translation = {
 const persian: Translation = {
   endonym: "فارسی",
   yourName: "نام شما",
-  favoriteFoodQuestion: "غذای ایرانی مورد علاقه‌ات چیست؟",
+  birthYearQuestion: "دو رقم آخر سال تولدت (تقویم شمسی)",
+  isThisYou: "این خودتی؟",
   start: "شروع",
   starting: "در حال شروع…",
   allDone: "تمام شد. سپاسگزاریم.",
   noPromptsAvailable: (endonym) => `هیچ واژه‌ای برای ${endonym} موجود نیست.`,
+  welcomeThankYou: (name) => `خوش آمدی ${name}. از اینکه صدایت را به اشتراک می‌گذاری سپاسگزاریم.`,
+  recordedCount: (count) => `تاکنون ${count} ضبط`,
   tapToRecord: "برای ضبط ضربه بزن",
   recordingTapToStop: "در حال ضبط — برای توقف ضربه بزن",
   saving: "در حال ذخیره…",
@@ -73,11 +82,14 @@ const persian: Translation = {
 const german: Translation = {
   endonym: "Deutsch",
   yourName: "Dein Name",
-  favoriteFoodQuestion: "Was ist dein iranisches Lieblingsgericht?",
+  birthYearQuestion: "Die letzten zwei Ziffern deines Geburtsjahres (persischer Kalender)",
+  isThisYou: "Bist du das?",
   start: "Start",
   starting: "Wird gestartet…",
   allDone: "Fertig. Danke.",
   noPromptsAvailable: (endonym) => `Keine Wörter für ${endonym} verfügbar.`,
+  welcomeThankYou: (name) => `Willkommen, ${name}. Danke, dass du deine Stimme teilst.`,
+  recordedCount: (count) => `Bisher ${count} ${count === 1 ? "Aufnahme" : "Aufnahmen"}`,
   tapToRecord: "Zum Aufnehmen tippen",
   recordingTapToStop: "Aufnahme läuft — zum Stoppen tippen",
   saving: "Wird gespeichert…",
@@ -95,11 +107,14 @@ const german: Translation = {
 const spanish: Translation = {
   endonym: "Español",
   yourName: "Tu nombre",
-  favoriteFoodQuestion: "¿Cuál es tu comida iraní favorita?",
+  birthYearQuestion: "Los últimos dos dígitos de tu año de nacimiento (calendario persa)",
+  isThisYou: "¿Eres tú?",
   start: "Empezar",
   starting: "Iniciando…",
   allDone: "Listo. Gracias.",
   noPromptsAvailable: (endonym) => `No hay palabras disponibles para ${endonym}.`,
+  welcomeThankYou: (name) => `¡Bienvenido/a, ${name}! Gracias por compartir tu voz.`,
+  recordedCount: (count) => `${count} ${count === 1 ? "grabación" : "grabaciones"} hasta ahora`,
   tapToRecord: "Toca para grabar",
   recordingTapToStop: "Grabando — toca para detener",
   saving: "Guardando…",
@@ -117,11 +132,14 @@ const spanish: Translation = {
 const dutch: Translation = {
   endonym: "Nederlands",
   yourName: "Jouw naam",
-  favoriteFoodQuestion: "Wat is jouw favoriete Iraanse gerecht?",
+  birthYearQuestion: "Laatste twee cijfers van je geboortejaar (Perzische kalender)",
+  isThisYou: "Ben jij dit?",
   start: "Start",
   starting: "Bezig met starten…",
   allDone: "Klaar. Bedankt.",
   noPromptsAvailable: (endonym) => `Geen woorden beschikbaar voor ${endonym}.`,
+  welcomeThankYou: (name) => `Welkom, ${name}. Bedankt voor het delen van je stem.`,
+  recordedCount: (count) => `${count} ${count === 1 ? "opname" : "opnames"} tot nu toe`,
   tapToRecord: "Tik om op te nemen",
   recordingTapToStop: "Opname bezig — tik om te stoppen",
   saving: "Bezig met opslaan…",
@@ -132,7 +150,7 @@ const dutch: Translation = {
   pausePlayback: "Afspelen pauzeren",
   redoRecording: "Opnieuw opnemen",
   saveRecording: "Opname opslaan",
-  playBackRedoOrSave: "Afspelen, opnieuw opnemen of opslaan",
+  playBackRedoOrSave: "Afspelen, opnieuw opnemen یا opslaan",
   somethingWrong: "Er ging iets mis.",
 };
 

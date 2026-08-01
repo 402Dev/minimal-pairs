@@ -3,11 +3,12 @@
 -- app with sample data for UI / fetching tests.
 
 -- Speakers ---------------------------------------------------------------
--- Identified by name + favorite Iranian food instead of a password.
-insert into public.speakers (name, favorite_food) values
-  ('Lukas', 'Fesenjan'),
-  ('Sara',  'Tahchin'),
-  ('Mina',  'Ghormeh Sabzi');
+-- Identified by name + last two digits of birth year (Persian calendar)
+-- instead of a password.
+insert into public.speakers (name, birth_year) values
+  ('Lukas', '95'),
+  ('Sara',  '72'),
+  ('Mina',  '68');
 
 -- Prompts ------------------------------------------------------------------
 -- Persian minimal pairs, sequence 1-10.
