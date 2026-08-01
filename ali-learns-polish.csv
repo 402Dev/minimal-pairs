@@ -1,0 +1,26 @@
+L1 Glitch Category,Word A,Word B,Phonemic Shift,Meaning,Catastrophe Index,Native Hardware Glitch,Frequency of Occurrence,Phonetic Proximity,Informal Sentence A,Informal Sentence B
+Sibilant Swamp I (sz vs ś),Kasza,Kasia,Hard vs Soft,Porridge / Katie,High,Critical,High,High,Zjadłem kaszę,Kasia jest ładna
+Sibilant Swamp I (sz vs ś),Proszę,Prosię,Hard vs Soft,Please / Piglet,Critical,Critical,High,High,Proszę bardzo,To małe prosię
+Sibilant Swamp I (sz vs ś),Kosz,Koś,Hard vs Soft,Basket / Mowing,Medium,Critical,Medium,High,Wyrzuć to do kosza,Koś trawę!
+Sibilant Swamp I (s vs ś),Pas,Paś,Alveolar vs Soft,Belt / Feed animals,Low,Critical,Medium,High,Zapnij pas,Paś krowy
+Sibilant Swamp I (sz vs ś),Szał,Siał,Hard vs Soft,Madness / Sowed,Low,Critical,Low,High,To był szał!,On siał trawę
+Sibilant Swamp II (cz vs ć),Miecz,Mieć,Hard vs Soft,Sword / To have,High,Critical,High,High,Mam stary miecz,Chcę to mieć
+Sibilant Swamp II (cz vs ć),Płacz,Płać,Hard vs Soft,Crying / Pay!,High,Critical,Medium,High,Słyszę płacz,Płać za siebie!
+Sibilant Swamp II (cz vs ć),Bicz,Bić,Hard vs Soft,Whip / To beat,High,Critical,Medium,High,Użył bicza,Nie wolno bić!
+Sibilant Swamp II (cz vs ć),Lecz,Leć,Hard vs Soft,However / Fly!,Medium,Critical,High,High,Jest drogi lecz dobry,Leć do sklepu!
+Sibilant Swamp II (cz vs c),Piecz,Piec,Hard vs Alveolar,Bake / Oven,Low,High,Medium,High,Piecz to ciasto,Mamy nowy piec
+Sibilant Swamp III (z vs ź),Koza,Kozia,Alveolar vs Soft,Goat / Goaty,Low,Critical,Low,High,To jest koza,To kozia farma
+Sibilant Swamp III (z vs ź),Razy,Razi,Alveolar vs Soft,Times / Dazzles,Medium,Critical,High,High,Dwa razy dwa,Słońce razi w oczy
+Sibilant Swamp III (ż vs sz),Życie,Szycie,Voiced vs Voiceless,Life / Sewing,High,High,High,High,Takie jest życie,Szycie jest nudne
+The I/Y Merger,Być,Bić,Hard vs Soft,To be / To beat,Critical,Critical,High,High,Być albo nie być,Przestań go bić!
+The I/Y Merger,My,Mi,Hard vs Soft,We / To me,High,Critical,High,High,My idziemy tam,Daj mi to
+The I/Y Merger,Pył,Pił,Hard vs Soft,Dust / Drank,Low,Critical,Medium,High,Wszędzie jest pył,On dużo pił
+The I/Y Merger,Był,Bił,Hard vs Soft,Was / Beat,High,Critical,High,High,On tu był,On mnie bił
+Nasal Blindness (ą vs o),Kąt,Kot,Nasal vs Oral,Corner / Cat,Medium,High,High,High,Stał w kącie,Mój kot śpi
+Nasal Blindness (ę vs e),Męka,Meka,Nasal vs Oral,Torment / Mecca,High,High,Low,High,To była męka,Meka jest w Arabii
+Nasal Blindness (ą vs a),Wąs,Was,Nasal vs Oral,Mustache / You,Medium,High,High,Medium,On ma wąs,Widzę was
+Nasal Blindness (ą vs a),Sąd,Sad,Nasal vs Oral,Court / Orchard,Low,High,Medium,Medium,Idę do sądu,Mamy duży sad
+Nasal Blindness (ę vs e),Tę,Te,Nasal vs Oral,This / These,Low,High,High,High,Weź tę książkę,Weź te książki
+The W/Ł Illusion,Wata,Łata,V vs W,Cotton / Patch,Low,High,Low,High,Kup paczkę waty,Mam łatę na spodniach
+The W/Ł Illusion,Wan,Łan,V vs W,Van / Field,Low,High,Low,High,To duży wan,Piękny łan zboża
+Sibilant Swamp (sz vs s),Szum,Sum,Hard vs Alveolar,Noise / Catfish,Low,High,Low,High,Słyszę szum,Złowił suma

@@ -248,9 +248,9 @@ language's onboarding/recorder UI text (buttons, statuses, "All done"
 etc.) shown natively instead of falling back to English, add an entry to
 [src/lib/i18n.ts](src/lib/i18n.ts) (search for `const TRANSLATIONS`) —
 copy one of the existing language blocks (`persian`, `german`, `spanish`,
-`dutch`) and translate every field. The lookup key is the lowercase
-language name, matched against whatever's in the `prompts.language`
-column / URL segment.
+`dutch`, `polish`) and translate every field. The lookup key is the
+lowercase language name, matched against whatever's in the
+`prompts.language` column / URL segment.
 
 If you add prompts for a language with no translation entry, the app
 still works — it just falls back to **English UI copy** while correctly

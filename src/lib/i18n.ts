@@ -32,7 +32,7 @@ export interface Translation {
 const english: Translation = {
   endonym: "English",
   yourName: "Your name",
-  birthYearQuestion: "Last two digits of your birth year (Persian calendar)",
+  birthYearQuestion: "Last two digits of your birth year",
   isThisYou: "Is this you?",
   start: "Start",
   starting: "Starting…",
@@ -82,7 +82,7 @@ const persian: Translation = {
 const german: Translation = {
   endonym: "Deutsch",
   yourName: "Dein Name",
-  birthYearQuestion: "Die letzten zwei Ziffern deines Geburtsjahres (persischer Kalender)",
+  birthYearQuestion: "Die letzten zwei Ziffern deines Geburtsjahres",
   isThisYou: "Bist du das?",
   start: "Start",
   starting: "Wird gestartet…",
@@ -107,7 +107,7 @@ const german: Translation = {
 const spanish: Translation = {
   endonym: "Español",
   yourName: "Tu nombre",
-  birthYearQuestion: "Los últimos dos dígitos de tu año de nacimiento (calendario persa)",
+  birthYearQuestion: "Los últimos dos dígitos de tu año de nacimiento",
   isThisYou: "¿Eres tú?",
   start: "Empezar",
   starting: "Iniciando…",
@@ -132,7 +132,7 @@ const spanish: Translation = {
 const dutch: Translation = {
   endonym: "Nederlands",
   yourName: "Jouw naam",
-  birthYearQuestion: "Laatste twee cijfers van je geboortejaar (Perzische kalender)",
+  birthYearQuestion: "Laatste twee cijfers van je geboortejaar",
   isThisYou: "Ben jij dit?",
   start: "Start",
   starting: "Bezig met starten…",
@@ -154,6 +154,40 @@ const dutch: Translation = {
   somethingWrong: "Er ging iets mis.",
 };
 
+/** Polish plural forms: 1 nagranie, 2–4 nagrania, 5+ (and 11–14) nagrań. */
+function polishRecordingWord(count: number): string {
+  if (count === 1) return "nagranie";
+  const lastTwo = count % 100;
+  const last = count % 10;
+  if (last >= 2 && last <= 4 && !(lastTwo >= 12 && lastTwo <= 14)) return "nagrania";
+  return "nagrań";
+}
+
+const polish: Translation = {
+  endonym: "Polski",
+  yourName: "Twoje imię",
+  birthYearQuestion: "Dwie ostatnie cyfry roku urodzenia",
+  isThisYou: "Czy to Ty?",
+  start: "Start",
+  starting: "Rozpoczynanie…",
+  allDone: "Gotowe. Dziękujemy.",
+  noPromptsAvailable: (endonym) => `Brak dostępnych słów dla ${endonym}.`,
+  welcomeThankYou: (name) => `Witaj, ${name}. Dziękujemy za udostępnienie swojego głosu.`,
+  recordedCount: (count) => `${count} ${polishRecordingWord(count)} dotychczas`,
+  tapToRecord: "Dotknij, aby nagrać",
+  recordingTapToStop: "Nagrywanie — dotknij, aby zatrzymać",
+  saving: "Zapisywanie…",
+  saved: "Dziękujemy — nagranie zapisane.",
+  startRecording: "Rozpocznij nagrywanie",
+  stopRecording: "Zatrzymaj nagrywanie",
+  playRecording: "Odtwórz nagranie",
+  pausePlayback: "Wstrzymaj odtwarzanie",
+  redoRecording: "Nagraj ponownie",
+  saveRecording: "Zapisz nagranie",
+  playBackRedoOrSave: "Odtwórz, nagraj ponownie lub zapisz",
+  somethingWrong: "Coś poszło nie tak.",
+};
+
 /** Keyed by lowercase canonical language name. */
 const TRANSLATIONS: Record<string, Translation> = {
   english: english,
@@ -162,6 +196,7 @@ const TRANSLATIONS: Record<string, Translation> = {
   german: german,
   spanish: spanish,
   dutch: dutch,
+  polish: polish,
 };
 
 /** Case-insensitive lookup, falling back to English UI copy for unknown
