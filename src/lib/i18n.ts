@@ -63,7 +63,7 @@ const persian: Translation = {
   starting: "در حال شروع…",
   allDone: "تمام شد. سپاسگزاریم.",
   noPromptsAvailable: (endonym) => `هیچ واژه‌ای برای ${endonym} موجود نیست.`,
-  welcomeThankYou: (name) => `خوش آمدی ${name}. از اینکه صدایت را به اشتراک می‌گذاری سپاسگزاریم.`,
+  welcomeThankYou: (name) => `خوش آمدی ${name} جان. از اینکه صدایت را به اشتراک می‌گذاری سپاسگزاریم.`,
   recordedCount: (count) => `تاکنون ${count} ضبط`,
   tapToRecord: "برای ضبط ضربه بزن",
   recordingTapToStop: "در حال ضبط — برای توقف ضربه بزن",
