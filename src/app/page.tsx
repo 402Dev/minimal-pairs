@@ -18,10 +18,10 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center bg-white px-6">
+    <div className="flex min-h-dvh flex-col items-center justify-center bg-[#FDFBF7] dark:bg-[#181615] px-6 text-[#2C2825] dark:text-[#EDE8E1] transition-colors duration-300">
       <div className="w-full max-w-xs">
         <label className="block">
-          <span className="mb-1 block text-xs font-medium uppercase tracking-widest text-neutral-400">
+          <span className="mb-1 block text-xs font-medium uppercase tracking-widest text-[#8C827A]">
             Language
           </span>
           <input
@@ -33,7 +33,7 @@ export default function Home() {
             autoComplete="off"
             autoCorrect="off"
             spellCheck={false}
-            className="w-full border-0 border-b-2 border-neutral-200 bg-transparent py-2 text-2xl font-medium text-neutral-900 placeholder-neutral-300 outline-none transition-colors focus:border-neutral-900"
+            className="w-full border-0 border-b-2 border-[#D8D2C9] dark:border-[#383330] bg-transparent py-2 text-2xl font-medium text-[#2C2825] dark:text-[#EDE8E1] placeholder-[#8C827A]/50 outline-none transition-colors duration-300 ease-out focus:border-[#2C2825] dark:focus:border-[#EDE8E1]"
           />
         </label>
       </div>

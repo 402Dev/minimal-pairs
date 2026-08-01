@@ -80,18 +80,18 @@ export default function SpeakerIntakeForm({ language, onComplete }: SpeakerIntak
   };
 
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center bg-white px-6">
+    <div className="flex min-h-dvh flex-col items-center justify-center bg-[#FDFBF7] dark:bg-[#181615] px-6 text-[#2C2825] dark:text-[#EDE8E1] transition-colors duration-300">
       <div className="w-full max-w-xs">
         <div className="space-y-10">
           <div className="space-y-1 text-center">
-            <span className="text-xs font-medium uppercase tracking-widest text-neutral-400">
+            <span className="text-xs font-medium uppercase tracking-widest text-[#8C827A]">
               {t.endonym}
             </span>
           </div>
 
           <div className="space-y-6">
             <label className="block">
-              <span className="mb-1 block text-xs font-medium uppercase tracking-widest text-neutral-400">
+              <span className="mb-1 block text-xs font-medium uppercase tracking-widest text-[#8C827A]">
                 {t.yourName}
               </span>
               <input
@@ -104,13 +104,13 @@ export default function SpeakerIntakeForm({ language, onComplete }: SpeakerIntak
                 autoComplete="off"
                 autoCorrect="off"
                 spellCheck={false}
-                className="w-full border-0 border-b-2 border-neutral-200 bg-transparent py-2 text-2xl font-medium text-neutral-900 placeholder-neutral-300 outline-none transition-colors focus:border-neutral-900 disabled:opacity-40"
+                className="w-full border-0 border-b-2 border-[#D8D2C9] dark:border-[#383330] bg-transparent py-2 text-2xl font-medium text-[#2C2825] dark:text-[#EDE8E1] placeholder-[#8C827A]/50 outline-none transition-colors duration-300 ease-out focus:border-[#2C2825] dark:focus:border-[#EDE8E1] disabled:opacity-40"
               />
             </label>
 
             {visibleMatches.length > 0 && !submitting && (
               <div className="space-y-2">
-                <span className="block text-xs font-medium uppercase tracking-widest text-neutral-400">
+                <span className="block text-xs font-medium uppercase tracking-widest text-[#8C827A]">
                   {t.isThisYou}
                 </span>
                 <ul className="space-y-1">
@@ -119,10 +119,10 @@ export default function SpeakerIntakeForm({ language, onComplete }: SpeakerIntak
                       <button
                         type="button"
                         onClick={() => handlePickMatch(match.id)}
-                        className="flex w-full items-center justify-between rounded-lg border border-neutral-200 px-4 py-3 text-left text-lg text-neutral-900 transition-colors active:bg-neutral-100"
+                        className="flex w-full items-center justify-between rounded-lg border border-[#D8D2C9] dark:border-[#383330] px-4 py-3 text-left text-lg text-[#2C2825] dark:text-[#EDE8E1] transition-all duration-300 ease-out hover:bg-[#F4EFE6] dark:hover:bg-[#252220] active:scale-[0.98]"
                       >
                         <span>{match.name}</span>
-                        <span className="text-neutral-400">{match.birthYear}</span>
+                        <span className="text-[#8C827A]">{match.birthYear}</span>
                       </button>
                     </li>
                   ))}
@@ -131,7 +131,7 @@ export default function SpeakerIntakeForm({ language, onComplete }: SpeakerIntak
             )}
 
             <label className="block">
-              <span className="mb-1 block text-xs font-medium uppercase tracking-widest text-neutral-400">
+              <span className="mb-1 block text-xs font-medium uppercase tracking-widest text-[#8C827A]">
                 {t.birthYearQuestion}
               </span>
               <input
@@ -145,7 +145,7 @@ export default function SpeakerIntakeForm({ language, onComplete }: SpeakerIntak
                 autoComplete="off"
                 autoCorrect="off"
                 spellCheck={false}
-                className="w-full border-0 border-b-2 border-neutral-200 bg-transparent py-2 text-2xl font-medium tracking-widest text-neutral-900 placeholder-neutral-300 outline-none transition-colors focus:border-neutral-900 disabled:opacity-40"
+                className="w-full border-0 border-b-2 border-[#D8D2C9] dark:border-[#383330] bg-transparent py-2 text-2xl font-medium tracking-widest text-[#2C2825] dark:text-[#EDE8E1] placeholder-[#8C827A]/50 outline-none transition-colors duration-300 ease-out focus:border-[#2C2825] dark:focus:border-[#EDE8E1] disabled:opacity-40"
               />
             </label>
           </div>
@@ -154,7 +154,7 @@ export default function SpeakerIntakeForm({ language, onComplete }: SpeakerIntak
             type="button"
             onClick={handleStart}
             disabled={!canStart}
-            className="w-full rounded-full bg-neutral-900 py-4 text-lg font-medium text-white transition-all active:scale-95 disabled:bg-neutral-100 disabled:text-neutral-300"
+            className="w-full rounded-full bg-[#2C2825] dark:bg-[#EDE8E1] py-4 text-lg font-medium text-[#FDFBF7] dark:text-[#181615] transition-all duration-300 ease-out active:scale-95 disabled:bg-[#E8E2D9] dark:disabled:bg-[#2A2624] disabled:text-[#8C827A]/60 shadow-sm"
           >
             {submitting ? t.starting : t.start}
           </button>
@@ -162,7 +162,7 @@ export default function SpeakerIntakeForm({ language, onComplete }: SpeakerIntak
       </div>
 
       {error && (
-        <p className="fixed bottom-8 left-1/2 -translate-x-1/2 text-sm text-neutral-500">
+        <p className="fixed bottom-8 left-1/2 -translate-x-1/2 text-sm text-[#8C827A]">
           {error}
         </p>
       )}

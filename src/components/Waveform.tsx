@@ -34,9 +34,12 @@ export default function Waveform({ getData }: WaveformProps) {
       ctx.clearRect(0, 0, width, height);
 
       if (data) {
+        const isDark =
+          window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+
         ctx.beginPath();
         ctx.lineWidth = 2;
-        ctx.strokeStyle = "#171717";
+        ctx.strokeStyle = isDark ? "#EDE8E1" : "#2C2825";
         ctx.lineJoin = "round";
         ctx.lineCap = "round";
 

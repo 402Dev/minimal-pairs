@@ -121,27 +121,29 @@ export default function RecorderForm({
   }
 
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center bg-white px-6">
+    <div className="flex min-h-dvh flex-col items-center justify-center bg-[#FDFBF7] dark:bg-[#181615] px-6 text-[#2C2825] dark:text-[#EDE8E1] transition-colors duration-300">
       <div className="w-full max-w-xs">
-        <div className="space-y-8">
-          <div className="space-y-2 text-center">
+        <div className="space-y-12">
+          {/* Header area with soft gratitude greeting, stats, and low-contrast progress counter */}
+          <div className="space-y-3 text-center">
             {speakerName && (
               <div className="space-y-0.5">
-                <p className="text-xs font-normal text-neutral-500">
+                <p className="text-xs font-normal text-[#8C827A]">
                   {t.welcomeThankYou(speakerName)}
                 </p>
-                <p className="text-[11px] font-medium text-neutral-400">
+                <p className="text-[11px] font-medium text-[#8C827A]/80">
                   {t.recordedCount(completedCount)}
                 </p>
               </div>
             )}
             <div>
-              <span className="text-xs font-medium uppercase tracking-widest text-neutral-400">
-                {t.endonym} · {currentPromptIndex + 1}/{prompts.length}
+              <span className="text-xs font-medium uppercase tracking-widest text-[#8C827A]">
+                {t.endonym} · {currentPromptIndex + 1} / {prompts.length}
               </span>
             </div>
           </div>
 
+          {/* Prompt display with maximum whitespace and organic literary serif typography */}
           <PromptDisplay word={currentPrompt.word_or_phrase} />
 
           <div className="flex flex-col items-center gap-4">
@@ -159,7 +161,7 @@ export default function RecorderForm({
       </div>
 
       {(error || submitError) && (
-        <p className="fixed bottom-8 left-1/2 -translate-x-1/2 text-sm text-neutral-500">
+        <p className="fixed bottom-8 left-1/2 -translate-x-1/2 text-sm text-[#8C827A]">
           {error ?? submitError}
         </p>
       )}
@@ -169,10 +171,12 @@ export default function RecorderForm({
   );
 }
 
-/** Massive, bold, static display of the word/phrase to be pronounced. */
+/** Massive, organic, literary serif display of the word/phrase to be pronounced. */
 function PromptDisplay({ word }: { word: string }) {
   return (
-    <p className="text-center text-6xl font-bold tracking-tight text-neutral-900">{word}</p>
+    <p className="py-6 text-center font-serif text-6xl font-bold tracking-tight text-[#2C2825] dark:text-[#EDE8E1]">
+      {word}
+    </p>
   );
 }
 
@@ -190,25 +194,27 @@ function CenteredMessage({
   t: Translation;
 }) {
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center bg-white px-6">
-      <div className="w-full max-w-xs space-y-4 text-center">
+    <div className="flex min-h-dvh flex-col items-center justify-center bg-[#FDFBF7] dark:bg-[#181615] px-6 text-[#2C2825] dark:text-[#EDE8E1] transition-colors duration-300">
+      <div className="w-full max-w-xs space-y-5 text-center">
         {speakerName && (
           <div className="space-y-0.5">
-            <p className="text-xs font-normal text-neutral-500">
+            <p className="text-xs font-normal text-[#8C827A]">
               {t.welcomeThankYou(speakerName)}
             </p>
             {completedCount !== undefined && (
-              <p className="text-[11px] font-medium text-neutral-400">
+              <p className="text-[11px] font-medium text-[#8C827A]/80">
                 {t.recordedCount(completedCount)}
               </p>
             )}
           </div>
         )}
         <div>
-          <span className="text-xs font-medium uppercase tracking-widest text-neutral-400">
+          <span className="text-xs font-medium uppercase tracking-widest text-[#8C827A]">
             {endonym}
           </span>
-          <p className="mt-1 text-2xl font-medium text-neutral-900">{message}</p>
+          <p className="mt-2 font-serif text-3xl font-medium text-[#2C2825] dark:text-[#EDE8E1]">
+            {message}
+          </p>
         </div>
       </div>
     </div>
@@ -235,16 +241,16 @@ function RecordButton({
       onClick={onTap}
       disabled={disabled}
       aria-label={isRecording ? t.stopRecording : t.startRecording}
-      className={`flex h-24 w-24 items-center justify-center rounded-full transition-all duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-4 disabled:cursor-not-allowed ${
+      className={`flex h-24 w-24 items-center justify-center rounded-full transition-all duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2C2825] focus-visible:ring-offset-4 disabled:cursor-not-allowed ${
         isRecording
-          ? "bg-red-600"
+          ? "bg-[#A83820] shadow-md scale-105"
           : disabled
-            ? "bg-neutral-100"
-            : "bg-neutral-900 active:scale-95"
+            ? "bg-[#E8E2D9] dark:bg-[#2A2624]"
+            : "bg-[#C85A32] hover:bg-[#B54E29] active:scale-95 shadow-sm"
       }`}
     >
       {isUploading ? (
-        <Loader2 className="h-8 w-8 animate-spin text-neutral-400" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#8C827A]" />
       ) : isSuccess ? (
         <Check className="h-8 w-8 text-white" strokeWidth={2.5} />
       ) : isRecording ? (
@@ -283,9 +289,6 @@ function ReviewPanel({
     const audio = audioRef.current;
     if (!audio) return;
     if (audio.paused) {
-      // play() returns a promise that rejects with AbortError if pause()
-      // (or another play()) interrupts it before playback starts — e.g.
-      // rapid tapping. That's expected, not a real error, so swallow it.
       audio.play().catch((err) => {
         if (err instanceof DOMException && err.name === "AbortError") return;
         throw err;
@@ -310,12 +313,12 @@ function ReviewPanel({
         type="button"
         onClick={togglePlayback}
         aria-label={isPlaying ? t.pausePlayback : t.playRecording}
-        className="flex h-24 w-24 items-center justify-center rounded-full bg-neutral-900 transition-transform active:scale-95"
+        className="flex h-24 w-24 items-center justify-center rounded-full bg-[#2C2825] dark:bg-[#EDE8E1] text-[#FDFBF7] dark:text-[#181615] transition-all duration-300 ease-out active:scale-95 shadow-sm"
       >
         {isPlaying ? (
-          <Pause className="h-8 w-8 text-white" strokeWidth={2} />
+          <Pause className="h-8 w-8" strokeWidth={2} />
         ) : (
-          <Play className="h-8 w-8 translate-x-0.5 text-white" strokeWidth={2} />
+          <Play className="h-8 w-8 translate-x-0.5" strokeWidth={2} />
         )}
       </button>
 
@@ -324,7 +327,7 @@ function ReviewPanel({
           type="button"
           onClick={onRedo}
           aria-label={t.redoRecording}
-          className="flex h-12 w-12 items-center justify-center rounded-full text-neutral-400 transition-colors hover:text-neutral-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-4"
+          className="flex h-12 w-12 items-center justify-center rounded-full text-[#8C827A] hover:text-[#2C2825] dark:hover:text-[#EDE8E1] transition-colors duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2C2825] focus-visible:ring-offset-4"
         >
           <Trash2 className="h-6 w-6" strokeWidth={2} />
         </button>
@@ -332,13 +335,13 @@ function ReviewPanel({
           type="button"
           onClick={onSave}
           aria-label={t.saveRecording}
-          className="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-900 text-white transition-transform active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-4"
+          className="flex h-12 w-12 items-center justify-center rounded-full bg-[#587057] hover:bg-[#495E48] text-white transition-all duration-300 ease-out active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#587057] focus-visible:ring-offset-4 shadow-sm"
         >
           <Check className="h-6 w-6" strokeWidth={2.5} />
         </button>
       </div>
 
-      <p className="text-sm text-neutral-400">{t.playBackRedoOrSave}</p>
+      <p className="text-sm text-[#8C827A]">{t.playBackRedoOrSave}</p>
     </div>
   );
 }
@@ -353,13 +356,13 @@ function Status({ phase, t }: { phase: Phase; t: Translation }) {
           ? t.saved
           : t.tapToRecord;
 
-  return <p className="text-sm text-neutral-400">{text}</p>;
+  return <p className="text-sm text-[#8C827A]">{text}</p>;
 }
 
 function Toast({ show, text }: { show: boolean; text: string }) {
   return (
     <div
-      className={`pointer-events-none fixed top-8 left-1/2 -translate-x-1/2 rounded-full bg-neutral-900 px-4 py-2 text-sm font-medium text-white shadow-lg transition-all duration-300 ${
+      className={`pointer-events-none fixed top-8 left-1/2 -translate-x-1/2 rounded-full border border-[#D2E0D2] bg-[#E8F0E8] px-5 py-2.5 text-sm font-medium text-[#587057] shadow-sm transition-all duration-300 ease-out ${
         show ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0"
       }`}
     >
