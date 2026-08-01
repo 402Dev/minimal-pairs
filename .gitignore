@@ -32,6 +32,15 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.local.example
+
+# local dev fallback storage & database
+/public/uploads/*
+!/public/uploads/.gitkeep
+/dev.db
+/dev.db-journal
+/dev.db-wal
+/dev.db-shm
 
 # vercel
 .vercel

@@ -1,0 +1,31 @@
+L1 Glitch Category,Word A,Word B,Phonemic Shift,Meaning,Catastrophe Index,Native Hardware Glitch,Frequency of Occurrence,Phonetic Proximity,Example Sentence A,Example Sentence B
+Terminal Devoicing,روز,روس,Final /z/ vs. /s/,Day / Russian,High,Critical,High,High,امروز روز خوبی است.,او یک نویسنده روس است.
+Terminal Devoicing,ساز,ساس,Final /z/ vs. /s/,Instrument / Bedbug,High,Critical,Medium,High,او ساز می‌نوازد.,روی تخت یک ساس پیدا کردم.
+Terminal Devoicing,کارد,کارت,Final /d/ vs. /t/,Knife / Card,Low,High,Medium,High,این کارد تیز است.,کارت اعتباری‌ام گم شد.
+Terminal Devoicing,باد,بات,Final /d/ vs. /t/,Wind / Bot,Low,High,Medium,High,باد شدیدی می‌وزد.,این تلگرام یک بات دارد.
+The Affricate Void,چاه,شاه,Initial /tʃ/ vs. /ʃ/,Water well / King,High,Critical,Medium,High,آب چاه عمیق است.,شاه در کاخ زندگی می‌کرد.
+The Affricate Void,ماچ,ماش,Final /tʃ/ vs. /ʃ/,Kiss / Mung bean,High,High,Low,High,کودک گونه مادرش را ماچ کرد.,با ماش سوپ درست کردیم.
+The Affricate Void,چنگ,جنگ,Initial /tʃ/ vs. /dʒ/,Harp / War,High,Critical,Medium,High,او آهنگ زیبایی با چنگ نواخت.,جنگ خسارات زیادی به همراه دارد.
+The Affricate Void,جان,شان,Initial /dʒ/ vs. /ʃ/,Soul / Status,High,Critical,High,Medium,جانم فدای دوستم.,او شان و مقام بالایی دارد.
+The Guttural Blur,خالی,قالی,Initial /x/ vs. /q/,Empty / Persian Rug,Medium,Critical,High,High,لیوان آب خالی است.,این قالی دستباف است.
+The Guttural Blur,خواب,قاب,Initial /x/ vs. /q/,Sleep / Frame,High,Critical,High,High,من نیاز به خواب دارم.,عکس را داخل قاب گذاشتم.
+The Guttural Blur,خار,غار,Initial /x/ vs. /q/,Thorn / Cave,Medium,High,Low,High,دستش به خار گل رفت.,آن‌ها وارد غار شدند.
+Uvular vs. Velar Stop,قند,کند,Initial /q/ vs. /k/,Sugar cube / Dug,Medium,High,High,Medium,یک قند در چای انداخت.,کارگر زمین را کند.
+Uvular vs. Velar Stop,قله,کله,Initial /q/ vs. /k/,Peak / Head,Medium,High,Medium,Medium,کوهنوردان به قله رسیدند.,کله‌اش در اثر ضربه درد گرفت.
+The Missing "G",گور,کور,Initial /g/ vs. /k/,Grave / Blind,High,High,Medium,High,گور خر در آفریقا زندگی می‌کند.,او به فرد کور کمک کرد.
+The Missing "G",گام,کام,Initial /g/ vs. /k/,Step / Palate,Low,High,Medium,High,یک گام به جلو برداشت.,سقف کام او ملتهب است.
+The Missing "G",گُل,کُل,Initial /g/ vs. /k/,Flower / All,Medium,High,High,High,این گل بوی خوبی دارد.,کل پروژه تمام شد.
+Initial "V" Devoicing,وام,فام,Initial /v/ vs. /f/,Loan / Color,Low,High,Medium,High,او از بانک وام گرفت.,نور سرخ‌فام غروب خورشید زیباست.
+Initial "V" Devoicing,وال,فال,Initial /v/ vs. /f/,Whale / Fortune,High,High,Low,High,وال بزرگ‌ترین پستاندار دریاست.,او فال حافظ گرفت.
+Short Vowel Mash-up,سَر,سِر,Medial /a/ vs. /e/,Head / Secret,Medium,Critical,High,High,سرم درد می‌کند.,این راز سِر باقی می‌ماند.
+Short Vowel Mash-up,زَر,زِر,Medial /a/ vs. /e/,Gold / Nonsense,High,Critical,Medium,High,طلا را زر هم می‌نامند.,زر نزن!
+Terminal Devoicing,راز,راس,Final /z/ vs. /s/,Secret / Head,Medium,Critical,High,High,من راز او را حفظ می‌کنم.,جلسه راس ساعت هشت شروع می‌شود.
+Terminal Devoicing,صد,سطح,Final /d/ vs. /t/,Hundred / Surface,Medium,High,High,High,این کتاب صد صفحه دارد.,سطح میز تمیز است.
+The Affricate Void,چای,جای,Initial /tʃ/ vs. /dʒ/,Tea / Place,High,Critical,High,High,یک استکان چای داغ بنوش.,جای شما خالی بود.
+The Affricate Void,چاق,شاق,Initial /tʃ/ vs. /ʃ/,Fat / Tough,High,Critical,Medium,High,آن مرد بسیار چاق است.,این کار بسیار شاق و سخت است.
+The Guttural Blur,خر,قر,Initial /x/ vs. /q/,Donkey / Grumbling,High,Critical,High,High,خر بار سنگینی می‌برد.,انقدر قر نزن!
+The Guttural Blur,خل,قل,Initial /x/ vs. /q/,Crazy / Twin,High,Critical,Medium,High,او رفتارهای خلی دارد.,او یک برادر قل دارد.
+The Missing "G",گوش,کوش,Initial /g/ vs. /k/,Ear / Where is it?,Medium,High,High,High,گوش من درد می‌کند.,کوش آن کتابی که خریدی؟
+The Missing "G",رگ,رک,Final /g/ vs. /k/,Vein / Frank,Low,High,Medium,High,رگ گردنش برجسته شد.,او انسانی بسیار رک است.
+Initial "V" Devoicing,ورز,فرض,Initial /v/ vs. /f/,Sport / Assumption,Low,High,Medium,High,ورز دادن خمیر مهم است.,فرض کنید که این درست باشد.
+Short Vowel Mash-up,بَر,بُر,Medial /a/ vs. /o/,Upon / Cut,Low,Critical,High,High,بر اساس گزارش منتشرشده...,کارت‌ها را بُر بزن.
