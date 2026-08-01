@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import SpeakerIntakeForm from "@/components/SpeakerIntakeForm";
 import RecorderForm from "@/components/RecorderForm";
 import { clearStoredSpeakerId, getStoredSpeakerId } from "@/lib/session";
 import { getCompletedPromptIds } from "@/lib/recordings-status";
 import { getSpeakerDetails } from "@/lib/speakers";
+import { seededShuffle } from "@/lib/shuffle";
 import type { Prompt } from "@/lib/types";
 
 interface LanguageSessionProps {
@@ -29,6 +30,15 @@ export default function LanguageSession({ language, prompts }: LanguageSessionPr
   const [speakerName, setSpeakerName] = useState<string | null>(null);
   const [initialCompletedCount, setInitialCompletedCount] = useState<number>(0);
 
+  // Shuffle once per speaker (seeded, so it's stable across reloads) rather
+  // than serving every visitor the same fixed sequence_order — otherwise
+  // minimal-pair "siblings" added back-to-back in the admin panel (e.g.
+  // خر/خار) always land right next to each other.
+  const shuffledPrompts = useMemo(
+    () => (speakerId ? seededShuffle(prompts, `${language}:${speakerId}`) : prompts),
+    [prompts, language, speakerId]
+  );
+
   function handleInvalidSpeaker() {
     clearStoredSpeakerId();
     setNewSpeakerId(null);
@@ -43,28 +53,31 @@ export default function LanguageSession({ language, prompts }: LanguageSessionPr
 
     (async () => {
       try {
-        const details = await getSpeakerDetails(speakerId);
+        // Run both lookups concurrently instead of one-after-the-other —
+        // halves the round-trip latency before the recorder can render.
+        const [details, completedIds] = await Promise.all([
+          getSpeakerDetails(speakerId),
+          getCompletedPromptIds(speakerId),
+        ]);
         if (cancelled) return;
+
         if (!details) {
           handleInvalidSpeaker();
           return;
         }
         setSpeakerName(details.name);
-
-        const completedIds = await getCompletedPromptIds(speakerId);
-        if (cancelled) return;
         setInitialCompletedCount(completedIds.size);
-        setRemainingPrompts(prompts.filter((prompt) => !completedIds.has(prompt.id)));
+        setRemainingPrompts(shuffledPrompts.filter((prompt) => !completedIds.has(prompt.id)));
       } catch (err) {
         console.error("Failed to load recording history:", err);
-        if (!cancelled) setRemainingPrompts(prompts);
+        if (!cancelled) setRemainingPrompts(shuffledPrompts);
       }
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [speakerId, prompts]);
+  }, [speakerId, shuffledPrompts]);
 
   if (!speakerId) {
     return <SpeakerIntakeForm language={language} onComplete={setNewSpeakerId} />;

@@ -213,13 +213,24 @@ insert into public.prompts (language, word_or_phrase, sequence_order) values
 - `language` — must match what you type in the URL (case-insensitively —
   `/Dutch`, `/dutch`, `/DUTCH` all resolve the same, and the *canonical
   casing you inserted here* is what gets displayed).
-- `sequence_order` — controls the order prompts are presented; the app
-  sorts `ORDER BY sequence_order ASC` and walks through them one at a time.
+- `sequence_order` — still the fetch order from the database and what
+  admin panel edits use to keep things tidy, but each speaker is actually
+  served their own **shuffled** order (see below) — it no longer
+  determines what a visitor sees first.
   Must be unique per language, doesn't need to start at 1, just needs a
   consistent ascending order.
 - `word_or_phrase` — displayed as a **massive bold static word** on
   screen. No formatting/markup — just plain text (Persian/Arabic-script
   right-to-left text renders fine as-is).
+
+**Per-speaker shuffle.** `LanguageSession` shuffles the fetched prompts
+with a seeded PRNG (`lib/shuffle.ts`, seed = `language:speakerId`) before
+filtering out already-completed ones. This avoids serving minimal-pair
+"siblings" that were added back-to-back (e.g. خر at `sequence_order` 1 and
+خار at 2) right next to each other, while still being **stable per
+speaker** — the same visitor sees the same order on every reload, so
+"resume where I left off" doesn't feel random. Two different speakers will
+generally get two different orders for the same language.
 
 To add a **new language**, all you need is prompt rows for that language —
 there's no separate "register a language" step. The route `/[language]`
