@@ -17,9 +17,9 @@ export const metadata = {
 export default async function AdminPage() {
   if (!isAdminConfigured) {
     return (
-      <main className="flex min-h-dvh items-center justify-center bg-white px-6 text-center">
-        <p className="text-sm text-neutral-500">
-          Admin panel is not configured. Set <code className="text-neutral-800">ADMIN_PASSWORD</code> in
+      <main className="flex min-h-dvh items-center justify-center bg-[#FDFBF7] dark:bg-[#181615] px-6 text-center">
+        <p className="text-sm text-[#8C827A]">
+          Admin panel is not configured. Set <code className="text-[#2C2825] dark:text-[#EDE8E1]">ADMIN_PASSWORD</code> in
           your environment to enable it.
         </p>
       </main>

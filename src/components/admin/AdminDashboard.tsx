@@ -23,23 +23,28 @@ export default function AdminDashboard() {
   }
 
   return (
-    <main className="min-h-dvh bg-white text-neutral-900">
-      <header className="flex items-center justify-between border-b border-neutral-200 px-6 py-4">
-        <h1 className="text-sm font-semibold tracking-wide">Admin</h1>
+    <main className="min-h-dvh bg-[#FDFBF7] dark:bg-[#181615] text-[#2C2825] dark:text-[#EDE8E1] transition-colors duration-300">
+      <header className="flex items-center justify-between border-b border-[#D8D2C9] dark:border-[#383330] px-6 py-4">
+        <h1 className="text-sm font-semibold tracking-wide text-[#2C2825] dark:text-[#EDE8E1]">Admin</h1>
         <nav className="flex gap-4">
           {TABS.map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`text-sm ${
-                tab === t.id ? "font-semibold text-neutral-900" : "text-neutral-400 hover:text-neutral-600"
+              className={`text-sm transition-colors duration-200 ${
+                tab === t.id
+                  ? "font-semibold text-[#2C2825] dark:text-[#EDE8E1]"
+                  : "text-[#8C827A] hover:text-[#2C2825] dark:hover:text-[#EDE8E1]"
               }`}
             >
               {t.label}
             </button>
           ))}
         </nav>
-        <button onClick={logout} className="text-sm text-neutral-400 hover:text-neutral-600">
+        <button
+          onClick={logout}
+          className="text-sm text-[#8C827A] hover:text-[#2C2825] dark:hover:text-[#EDE8E1] transition-colors duration-200"
+        >
           Log out
         </button>
       </header>

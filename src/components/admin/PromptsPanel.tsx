@@ -97,56 +97,56 @@ export default function PromptsPanel() {
     <div className="space-y-8">
       <form onSubmit={handleAdd} className="flex flex-wrap items-end gap-3">
         <div>
-          <label className="block text-xs text-neutral-500">Language</label>
+          <label className="block text-xs text-[#8C827A]">Language</label>
           <input
             value={language}
             onChange={(event) => setLanguage(event.target.value)}
             placeholder="Persian"
-            className="border-b border-neutral-300 bg-transparent py-1 outline-none focus:border-neutral-900"
+            className="border-b border-[#D8D2C9] dark:border-[#383330] bg-transparent py-1 text-[#2C2825] dark:text-[#EDE8E1] placeholder-[#8C827A]/50 outline-none transition-colors duration-200 focus:border-[#2C2825] dark:focus:border-[#EDE8E1]"
           />
         </div>
         <div>
-          <label className="block text-xs text-neutral-500">Word / phrase</label>
+          <label className="block text-xs text-[#8C827A]">Word / phrase</label>
           <input
             value={word}
             onChange={(event) => setWord(event.target.value)}
             placeholder="خر"
-            className="border-b border-neutral-300 bg-transparent py-1 outline-none focus:border-neutral-900"
+            className="border-b border-[#D8D2C9] dark:border-[#383330] bg-transparent py-1 text-[#2C2825] dark:text-[#EDE8E1] placeholder-[#8C827A]/50 outline-none transition-colors duration-200 focus:border-[#2C2825] dark:focus:border-[#EDE8E1]"
           />
         </div>
         <button
           type="submit"
           disabled={adding || !language.trim() || !word.trim()}
-          className="rounded-full bg-neutral-900 px-4 py-1.5 text-sm text-white disabled:opacity-30"
+          className="rounded-full bg-[#2C2825] dark:bg-[#EDE8E1] px-4 py-1.5 text-sm text-[#FDFBF7] dark:text-[#181615] transition-all duration-200 disabled:opacity-30"
         >
           Add prompt
         </button>
       </form>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
       {!prompts ? (
-        <p className="text-sm text-neutral-400">Loading…</p>
+        <p className="text-sm text-[#8C827A]">Loading…</p>
       ) : grouped.size === 0 ? (
-        <p className="text-sm text-neutral-400">No prompts yet.</p>
+        <p className="text-sm text-[#8C827A]">No prompts yet.</p>
       ) : (
         Array.from(grouped.entries()).map(([lang, list]) => (
           <div key={lang}>
-            <h2 className="mb-2 text-sm font-semibold text-neutral-700">{lang}</h2>
-            <ul className="divide-y divide-neutral-100 border-y border-neutral-100">
+            <h2 className="mb-2 text-sm font-semibold text-[#2C2825] dark:text-[#EDE8E1]">{lang}</h2>
+            <ul className="divide-y divide-[#E8E2D9] dark:divide-[#2A2624] border-y border-[#E8E2D9] dark:border-[#2A2624]">
               {list.map((prompt) => (
                 <li key={prompt.id} className="flex items-center justify-between gap-3 py-2 text-sm">
-                  <span className="text-neutral-400 tabular-nums">{prompt.sequence_order}</span>
+                  <span className="text-[#8C827A] tabular-nums">{prompt.sequence_order}</span>
                   <button
                     onClick={() => handleWordEdit(prompt.id, prompt.word_or_phrase)}
-                    className="flex-1 text-left hover:underline"
+                    className="flex-1 text-left text-[#2C2825] dark:text-[#EDE8E1] hover:underline"
                   >
                     {prompt.word_or_phrase}
                   </button>
                   <button
                     onClick={() => handleDelete(prompt.id)}
                     aria-label="Delete prompt"
-                    className="text-neutral-300 hover:text-red-600"
+                    className="text-[#8C827A]/40 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200"
                   >
                     <Trash2 size={16} />
                   </button>
