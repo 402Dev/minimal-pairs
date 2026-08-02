@@ -14,11 +14,9 @@
   --font-serif: var(--font-lora);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #181615;
-    --foreground: #ede8e1;
-  }
+.dark {
+  --background: #181615;
+  --foreground: #ede8e1;
 }
 
 body {

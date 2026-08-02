@@ -27,6 +27,7 @@ export interface Translation {
   saveRecording: string;
   playBackRedoOrSave: string;
   somethingWrong: string;
+  notYou: (name: string) => string;
 }
 
 const english: Translation = {
@@ -54,6 +55,7 @@ const english: Translation = {
   saveRecording: "Save recording",
   playBackRedoOrSave: "Play back, redo, or save",
   somethingWrong: "Something went wrong.",
+  notYou: (name) => `You’re not ${name}?`,
 };
 
 const persian: Translation = {
@@ -80,6 +82,7 @@ const persian: Translation = {
   saveRecording: "ذخیره ضبط",
   playBackRedoOrSave: "پخش، ضبط دوباره یا ذخیره",
   somethingWrong: "مشکلی پیش آمد.",
+  notYou: (name) => `شما \u2068${name}\u2069 نیستید؟`,
 };
 
 const german: Translation = {
@@ -107,6 +110,7 @@ const german: Translation = {
   saveRecording: "Aufnahme speichern",
   playBackRedoOrSave: "Abspielen, erneut aufnehmen oder speichern",
   somethingWrong: "Etwas ist schiefgelaufen.",
+  notYou: (name) => `Nicht du, ${name}?`,
 };
 
 const spanish: Translation = {
@@ -135,6 +139,7 @@ const spanish: Translation = {
   saveRecording: "Guardar grabación",
   playBackRedoOrSave: "Reproducir, repetir o guardar",
   somethingWrong: "Algo salió mal.",
+  notYou: (name) => `¿No eres tú, ${name}?`,
 };
 
 const dutch: Translation = {
@@ -162,6 +167,7 @@ const dutch: Translation = {
   saveRecording: "Opname opslaan",
   playBackRedoOrSave: "Afspelen, opnieuw opnemen of opslaan",
   somethingWrong: "Er ging iets mis.",
+  notYou: (name) => `Niet jij, ${name}?`,
 };
 
 /** Polish plural forms: 1 nagranie, 2–4 nagrania, 5+ (and 11–14) nagrań. */
@@ -198,6 +204,7 @@ const polish: Translation = {
   saveRecording: "Zapisz nagranie",
   playBackRedoOrSave: "Odtwórz, nagraj ponownie lub zapisz",
   somethingWrong: "Coś poszło nie tak.",
+  notYou: (name) => `Nie ty, ${name}?`,
 };
 
 /** Keyed by lowercase canonical language name. */

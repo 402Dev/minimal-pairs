@@ -21,12 +21,21 @@ function getServerSnapshot() {
   return null;
 }
 
-export default function LanguageSession({ language, prompts }: LanguageSessionProps) {
-  const storedSpeakerId = useSyncExternalStore(subscribe, getStoredSpeakerId, getServerSnapshot);
+export default function LanguageSession({
+  language,
+  prompts,
+}: LanguageSessionProps) {
+  const storedSpeakerId = useSyncExternalStore(
+    subscribe,
+    getStoredSpeakerId,
+    getServerSnapshot,
+  );
   const [newSpeakerId, setNewSpeakerId] = useState<string | null>(null);
   const speakerId = newSpeakerId ?? storedSpeakerId;
 
-  const [remainingPrompts, setRemainingPrompts] = useState<Prompt[] | null>(null);
+  const [remainingPrompts, setRemainingPrompts] = useState<Prompt[] | null>(
+    null,
+  );
   const [speakerName, setSpeakerName] = useState<string | null>(null);
   const [initialCompletedCount, setInitialCompletedCount] = useState<number>(0);
 
@@ -35,8 +44,9 @@ export default function LanguageSession({ language, prompts }: LanguageSessionPr
   // minimal-pair "siblings" added back-to-back in the admin panel (e.g.
   // خر/خار) always land right next to each other.
   const shuffledPrompts = useMemo(
-    () => (speakerId ? seededShuffle(prompts, `${language}:${speakerId}`) : prompts),
-    [prompts, language, speakerId]
+    () =>
+      speakerId ? seededShuffle(prompts, `${language}:${speakerId}`) : prompts,
+    [prompts, language, speakerId],
   );
 
   function handleInvalidSpeaker() {
@@ -67,7 +77,9 @@ export default function LanguageSession({ language, prompts }: LanguageSessionPr
         }
         setSpeakerName(details.name);
         setInitialCompletedCount(completedIds.size);
-        setRemainingPrompts(shuffledPrompts.filter((prompt) => !completedIds.has(prompt.id)));
+        setRemainingPrompts(
+          shuffledPrompts.filter((prompt) => !completedIds.has(prompt.id)),
+        );
       } catch (err) {
         console.error("Failed to load recording history:", err);
         if (!cancelled) setRemainingPrompts(shuffledPrompts);
@@ -80,7 +92,9 @@ export default function LanguageSession({ language, prompts }: LanguageSessionPr
   }, [speakerId, shuffledPrompts]);
 
   if (!speakerId) {
-    return <SpeakerIntakeForm language={language} onComplete={setNewSpeakerId} />;
+    return (
+      <SpeakerIntakeForm language={language} onComplete={setNewSpeakerId} />
+    );
   }
 
   if (!remainingPrompts) {
@@ -95,6 +109,7 @@ export default function LanguageSession({ language, prompts }: LanguageSessionPr
       speakerName={speakerName}
       initialCompletedCount={initialCompletedCount}
       onInvalidSpeaker={handleInvalidSpeaker}
+      onChangeUser={handleInvalidSpeaker}
     />
   );
 }

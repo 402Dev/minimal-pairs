@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { findOrCreateSpeaker, searchSpeakersByName, type SpeakerMatch } from "@/lib/speakers";
+import {
+  findOrCreateSpeaker,
+  searchSpeakersByName,
+  type SpeakerMatch,
+} from "@/lib/speakers";
 import { setStoredSpeakerId } from "@/lib/session";
 import { getTranslation } from "@/lib/i18n";
 
@@ -20,7 +24,10 @@ interface SpeakerIntakeFormProps {
  * below the field — tapping one signs them in immediately, so a returning
  * visitor never has to retype anything.
  */
-export default function SpeakerIntakeForm({ language, onComplete }: SpeakerIntakeFormProps) {
+export default function SpeakerIntakeForm({
+  language,
+  onComplete,
+}: SpeakerIntakeFormProps) {
   const t = getTranslation(language);
   const [name, setName] = useState("");
   const [birthYear, setBirthYear] = useState("");
@@ -28,7 +35,8 @@ export default function SpeakerIntakeForm({ language, onComplete }: SpeakerIntak
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const canStart = name.trim().length > 0 && /^\d{2}$/.test(birthYear.trim()) && !submitting;
+  const canStart =
+    name.trim().length > 0 && /^\d{2}$/.test(birthYear.trim()) && !submitting;
   // Only show matches while the name field still qualifies for a lookup;
   // avoids clearing `matches` synchronously inside the effect below.
   const visibleMatches = name.trim().length >= 2 ? matches : [];
@@ -91,7 +99,7 @@ export default function SpeakerIntakeForm({ language, onComplete }: SpeakerIntak
 
           <div className="space-y-6">
             <label className="block">
-              <span className="mb-1 block text-xs font-medium uppercase tracking-widest text-[#8C827A]">
+              <span className="mb-1 block text-sm tracking-wider font-medium uppercase tracking-widest text-[#8C827A]">
                 {t.yourName}
               </span>
               <input
@@ -104,7 +112,7 @@ export default function SpeakerIntakeForm({ language, onComplete }: SpeakerIntak
                 autoComplete="off"
                 autoCorrect="off"
                 spellCheck={false}
-                className="w-full border-0 border-b-2 border-[#D8D2C9] dark:border-[#383330] bg-transparent py-2 text-2xl font-medium text-[#2C2825] dark:text-[#EDE8E1] placeholder-[#8C827A]/50 outline-none transition-colors duration-300 ease-out focus:border-[#2C2825] dark:focus:border-[#EDE8E1] disabled:opacity-40"
+                className="w-full border-0 border-b-2 border-[#D8D2C9] dark:border-[#383330] bg-transparent py-2 text-2xl font-medium text-[#2C2825] dark:text-[#EDE8E1] placeholder-[#8C827A]/70 outline-none transition-colors duration-300 ease-out focus:border-[#2C2825] dark:focus:border-[#EDE8E1] disabled:opacity-40"
               />
             </label>
 
@@ -119,10 +127,11 @@ export default function SpeakerIntakeForm({ language, onComplete }: SpeakerIntak
                       <button
                         type="button"
                         onClick={() => handlePickMatch(match.id)}
-                        className="flex w-full items-center justify-between rounded-lg border border-[#D8D2C9] dark:border-[#383330] px-4 py-3 text-left text-lg text-[#2C2825] dark:text-[#EDE8E1] transition-all duration-300 ease-out hover:bg-[#F4EFE6] dark:hover:bg-[#252220] active:scale-[0.98]"
-                      >
+                        className="flex w-full items-center justify-between rounded-lg border border-[#D8D2C9] dark:border-[#383330] px-4 py-3 text-left text-xl text-[#2C2825] dark:text-[#EDE8E1] transition-all duration-300 ease-out hover:bg-[#F4EFE6] dark:hover:bg-[#252220] active:scale-[0.98]">
                         <span>{match.name}</span>
-                        <span className="text-[#8C827A]">{match.birthYear}</span>
+                        <span className="text-[#8C827A]">
+                          {match.birthYear}
+                        </span>
                       </button>
                     </li>
                   ))}
@@ -131,7 +140,7 @@ export default function SpeakerIntakeForm({ language, onComplete }: SpeakerIntak
             )}
 
             <label className="block">
-              <span className="mb-1 block text-xs font-medium uppercase tracking-widest text-[#8C827A]">
+              <span className="mb-1 block text-sm tracking-wider font-medium uppercase tracking-widest text-[#8C827A]">
                 {t.birthYearQuestion}
               </span>
               <input
@@ -139,13 +148,15 @@ export default function SpeakerIntakeForm({ language, onComplete }: SpeakerIntak
                 inputMode="numeric"
                 maxLength={2}
                 value={birthYear}
-                onChange={(e) => setBirthYear(e.target.value.replace(/\D/g, "").slice(0, 2))}
+                onChange={(e) =>
+                  setBirthYear(e.target.value.replace(/\D/g, "").slice(0, 2))
+                }
                 onKeyDown={(e) => e.key === "Enter" && handleStart()}
                 disabled={submitting}
                 autoComplete="off"
                 autoCorrect="off"
                 spellCheck={false}
-                className="w-full border-0 border-b-2 border-[#D8D2C9] dark:border-[#383330] bg-transparent py-2 text-2xl font-medium tracking-widest text-[#2C2825] dark:text-[#EDE8E1] placeholder-[#8C827A]/50 outline-none transition-colors duration-300 ease-out focus:border-[#2C2825] dark:focus:border-[#EDE8E1] disabled:opacity-40"
+                className="w-full border-0 border-b-2 border-[#D8D2C9] dark:border-[#383330] bg-transparent py-2 text-2xl font-medium tracking-widest text-[#2C2825] dark:text-[#EDE8E1] placeholder-[#8C827A]/70 outline-none transition-colors duration-300 ease-out focus:border-[#2C2825] dark:focus:border-[#EDE8E1] disabled:opacity-40"
               />
             </label>
           </div>
@@ -154,8 +165,7 @@ export default function SpeakerIntakeForm({ language, onComplete }: SpeakerIntak
             type="button"
             onClick={handleStart}
             disabled={!canStart}
-            className="w-full rounded-full bg-[#2C2825] dark:bg-[#EDE8E1] py-4 text-lg font-medium text-[#FDFBF7] dark:text-[#181615] transition-all duration-300 ease-out active:scale-95 disabled:bg-[#E8E2D9] dark:disabled:bg-[#2A2624] disabled:text-[#8C827A]/60 shadow-sm"
-          >
+            className="w-full rounded-full bg-[#2C2825] dark:bg-[#EDE8E1] py-4 text-xl font-medium text-[#FDFBF7] dark:text-[#181615] transition-all duration-300 ease-out active:scale-95 disabled:bg-[#E8E2D9] dark:disabled:bg-[#2A2624] disabled:text-[#8C827A]/60 shadow-sm">
             {submitting ? t.starting : t.start}
           </button>
         </div>

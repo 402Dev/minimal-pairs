@@ -23,6 +23,7 @@ interface RecorderFormProps {
    * speaker id and send the visitor back through onboarding.
    */
   onInvalidSpeaker: () => void;
+  onChangeUser: () => void;
 }
 
 export default function RecorderForm({
@@ -32,6 +33,7 @@ export default function RecorderForm({
   speakerName,
   initialCompletedCount = 0,
   onInvalidSpeaker,
+  onChangeUser, // Destructure here
 }: RecorderFormProps) {
   const t = getTranslation(language);
   const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
@@ -41,8 +43,16 @@ export default function RecorderForm({
 
   const completedCount = initialCompletedCount + savedCount;
 
-  const { status, audioBlob, mimeType, error, start, stop, reset, getWaveformData } =
-    useAudioRecorder();
+  const {
+    status,
+    audioBlob,
+    mimeType,
+    error,
+    start,
+    stop,
+    reset,
+    getWaveformData,
+  } = useAudioRecorder();
 
   const currentPrompt: Prompt | undefined = prompts[currentPromptIndex];
 
@@ -76,7 +86,12 @@ export default function RecorderForm({
     setPhase("uploading");
     setSubmitError(null);
 
-    submitRecording({ audioBlob, mimeType, speakerId, promptId: currentPrompt.id })
+    submitRecording({
+      audioBlob,
+      mimeType,
+      speakerId,
+      promptId: currentPrompt.id,
+    })
       .then(() => {
         setPhase("success");
         setSavedCount((prev) => prev + 1);
@@ -94,7 +109,15 @@ export default function RecorderForm({
         setSubmitError(err instanceof Error ? err.message : t.somethingWrong);
         setPhase("review");
       });
-  }, [audioBlob, mimeType, speakerId, currentPrompt, reset, t, onInvalidSpeaker]);
+  }, [
+    audioBlob,
+    mimeType,
+    speakerId,
+    currentPrompt,
+    reset,
+    t,
+    onInvalidSpeaker,
+  ]);
 
   if (prompts.length === 0) {
     return (
@@ -122,23 +145,30 @@ export default function RecorderForm({
 
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center bg-[#FDFBF7] dark:bg-[#181615] px-6 text-[#2C2825] dark:text-[#EDE8E1] transition-colors duration-300">
+      {/* The Orbiting Satellite Button */}
+      <button
+        onClick={onChangeUser}
+        // dir="auto"
+        className="absolute top-6 end-6 text-sm font-semibold text-[#8C827A] dark:text-[#D8D2C9] hover:text-[#2C2825] dark:hover:text-[#FFFFFF] transition-colors duration-300">
+        {typeof t.notYou === "function" ? t.notYou(speakerName) : t.notYou}
+      </button>
       <div className="w-full max-w-xs">
         <div className="space-y-12">
           {/* Header area with soft gratitude greeting, stats, and low-contrast progress counter */}
           <div className="space-y-3 text-center">
             {speakerName && (
-              <div className="space-y-0.5">
-                <p className="text-xs font-normal text-[#8C827A]">
+              <div className="space-y-0.5" dir="auto">
+                <p className="text-base font-medium text-[#8C827A] dark:text-[#EDE8E1]/80">
                   {t.welcomeThankYou(speakerName)}
                 </p>
-                <p className="text-[11px] font-medium text-[#8C827A]/80">
+                <p className="text-sm font-medium text-[#8C827A]/80 dark:text-[#EDE8E1]/50">
                   {t.recordedCount(completedCount)}
                 </p>
               </div>
             )}
             <div>
-              <span className="text-xs font-medium uppercase tracking-widest text-[#8C827A]">
-                {t.endonym} · {currentPromptIndex + 1} / {prompts.length}
+              <span className="text-sm font-bold uppercase tracking-widest text-[#8C827A] dark:text-[#D8D2C9]">
+                {t.endonym} • {currentPromptIndex + 1} / {prompts.length}
               </span>
             </div>
           </div>
@@ -148,11 +178,22 @@ export default function RecorderForm({
 
           <div className="flex flex-col items-center gap-4">
             {displayPhase === "review" && audioBlob ? (
-              <ReviewPanel audioBlob={audioBlob} t={t} onRedo={handleRedo} onSave={handleSave} />
+              <ReviewPanel
+                audioBlob={audioBlob}
+                t={t}
+                onRedo={handleRedo}
+                onSave={handleSave}
+              />
             ) : (
               <>
-                <RecordButton phase={displayPhase} t={t} onTap={handleRecordTap} />
-                {displayPhase === "recording" && <Waveform getData={getWaveformData} />}
+                <RecordButton
+                  phase={displayPhase}
+                  t={t}
+                  onTap={handleRecordTap}
+                />
+                {displayPhase === "recording" && (
+                  <Waveform getData={getWaveformData} />
+                )}
                 <Status phase={displayPhase} t={t} />
               </>
             )}
@@ -174,7 +215,7 @@ export default function RecorderForm({
 /** Massive, organic, literary serif display of the word/phrase to be pronounced. */
 function PromptDisplay({ word }: { word: string }) {
   return (
-    <p className="py-6 text-center font-serif text-6xl font-bold tracking-tight text-[#2C2825] dark:text-[#EDE8E1]">
+    <p className="py-6 text-center font-serif text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-[#2C2825] dark:text-[#FFFFFF]">
       {word}
     </p>
   );
@@ -247,8 +288,7 @@ function RecordButton({
           : disabled
             ? "bg-[#E8E2D9] dark:bg-[#2A2624]"
             : "bg-[#C85A32] hover:bg-[#B54E29] active:scale-95 shadow-sm"
-      }`}
-    >
+      }`}>
       {isUploading ? (
         <Loader2 className="h-8 w-8 animate-spin text-[#8C827A]" />
       ) : isSuccess ? (
@@ -313,8 +353,7 @@ function ReviewPanel({
         type="button"
         onClick={togglePlayback}
         aria-label={isPlaying ? t.pausePlayback : t.playRecording}
-        className="flex h-24 w-24 items-center justify-center rounded-full bg-[#2C2825] dark:bg-[#EDE8E1] text-[#FDFBF7] dark:text-[#181615] transition-all duration-300 ease-out active:scale-95 shadow-sm"
-      >
+        className="flex h-24 w-24 items-center justify-center rounded-full bg-[#2C2825] dark:bg-[#EDE8E1] text-[#FDFBF7] dark:text-[#181615] transition-all duration-300 ease-out active:scale-95 shadow-sm">
         {isPlaying ? (
           <Pause className="h-8 w-8" strokeWidth={2} />
         ) : (
@@ -327,16 +366,14 @@ function ReviewPanel({
           type="button"
           onClick={onRedo}
           aria-label={t.redoRecording}
-          className="flex h-12 w-12 items-center justify-center rounded-full text-[#8C827A] hover:text-[#2C2825] dark:hover:text-[#EDE8E1] transition-colors duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2C2825] focus-visible:ring-offset-4"
-        >
+          className="flex h-12 w-12 items-center justify-center rounded-full text-[#8C827A] hover:text-[#2C2825] dark:hover:text-[#EDE8E1] transition-colors duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2C2825] focus-visible:ring-offset-4">
           <Trash2 className="h-6 w-6" strokeWidth={2} />
         </button>
         <button
           type="button"
           onClick={onSave}
           aria-label={t.saveRecording}
-          className="flex h-12 w-12 items-center justify-center rounded-full bg-[#587057] hover:bg-[#495E48] text-white transition-all duration-300 ease-out active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#587057] focus-visible:ring-offset-4 shadow-sm"
-        >
+          className="flex h-12 w-12 items-center justify-center rounded-full bg-[#587057] hover:bg-[#495E48] text-white transition-all duration-300 ease-out active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#587057] focus-visible:ring-offset-4 shadow-sm">
           <Check className="h-6 w-6" strokeWidth={2.5} />
         </button>
       </div>
@@ -356,7 +393,11 @@ function Status({ phase, t }: { phase: Phase; t: Translation }) {
           ? t.saved
           : t.tapToRecord;
 
-  return <p className="text-sm text-[#8C827A]">{text}</p>;
+  return (
+    <p className="text-lg font-medium text-[#8C827A] dark:text-[#D8D2C9]">
+      {text}
+    </p>
+  );
 }
 
 function Toast({ show, text }: { show: boolean; text: string }) {
@@ -364,8 +405,7 @@ function Toast({ show, text }: { show: boolean; text: string }) {
     <div
       className={`pointer-events-none fixed top-8 left-1/2 -translate-x-1/2 rounded-full border border-[#D2E0D2] bg-[#E8F0E8] px-5 py-2.5 text-sm font-medium text-[#587057] shadow-sm transition-all duration-300 ease-out ${
         show ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0"
-      }`}
-    >
+      }`}>
       {text}
     </div>
   );
