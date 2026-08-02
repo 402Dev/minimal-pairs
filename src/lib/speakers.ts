@@ -3,6 +3,7 @@ import { SPEAKERS_TABLE, supabase } from "@/lib/supabase";
 interface FindOrCreateSpeakerArgs {
   name: string;
   birthYear: string;
+  dialect?: string;
 }
 
 export interface SpeakerMatch {
@@ -23,6 +24,7 @@ export interface SpeakerMatch {
 export async function findOrCreateSpeaker({
   name,
   birthYear,
+  dialect,
 }: FindOrCreateSpeakerArgs): Promise<string> {
   if (supabase) {
     const { data: existing, error: lookupError } = await supabase
@@ -33,33 +35,43 @@ export async function findOrCreateSpeaker({
       .limit(1)
       .maybeSingle();
 
-    if (lookupError) {
-      throw new Error(lookupError.message);
-    }
+    if (lookupError) throw new Error(lookupError.message);
+
     if (existing) {
+      // If they are a returning speaker but now picking a dialect (e.g. German page), update it!
+      if (dialect) {
+        await supabase
+          .from(SPEAKERS_TABLE)
+          .update({ dialect })
+          .eq("id", existing.id);
+      }
       return existing.id as string;
     }
 
+    // Insert new speaker with dialect
     const { data, error } = await supabase
       .from(SPEAKERS_TABLE)
-      .insert({ name: name.trim(), birth_year: birthYear.trim() })
+      .insert({
+        name: name.trim(),
+        birth_year: birthYear.trim(),
+        dialect: dialect || null, // <-- Add dialect to insert
+      })
       .select("id")
       .single();
 
-    if (error || !data) {
+    if (error || !data)
       throw new Error(error?.message ?? "Failed to create speaker.");
-    }
     return data.id as string;
   }
 
+  // Local fallback
   const response = await fetch("/api/speakers", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, birthYear }),
+    body: JSON.stringify({ name, birthYear, dialect }), // <-- Pass to API
   });
-  if (!response.ok) {
-    throw new Error("Failed to create speaker.");
-  }
+
+  if (!response.ok) throw new Error("Failed to create speaker.");
   const { id } = await response.json();
   return id as string;
 }
@@ -68,7 +80,9 @@ export async function findOrCreateSpeaker({
  * Fetches speaker details (name, birth year) for a given speaker id.
  * Returns null if the speaker no longer exists.
  */
-export async function getSpeakerDetails(speakerId: string): Promise<SpeakerMatch | null> {
+export async function getSpeakerDetails(
+  speakerId: string,
+): Promise<SpeakerMatch | null> {
   if (supabase) {
     const { data, error } = await supabase
       .from(SPEAKERS_TABLE)
@@ -85,7 +99,9 @@ export async function getSpeakerDetails(speakerId: string): Promise<SpeakerMatch
     };
   }
 
-  const response = await fetch(`/api/speakers?id=${encodeURIComponent(speakerId)}`);
+  const response = await fetch(
+    `/api/speakers?id=${encodeURIComponent(speakerId)}`,
+  );
   if (!response.ok) throw new Error("Failed to fetch speaker details.");
   const { exists, speaker } = await response.json();
   if (!exists || !speaker) return null;
@@ -112,7 +128,9 @@ export async function speakerExists(speakerId: string): Promise<boolean> {
  * making a returning visitor retype their birth year. Returns at most a
  * handful of matches; an empty/short query returns none.
  */
-export async function searchSpeakersByName(name: string): Promise<SpeakerMatch[]> {
+export async function searchSpeakersByName(
+  name: string,
+): Promise<SpeakerMatch[]> {
   const trimmed = name.trim();
   if (trimmed.length < 2) return [];
 
@@ -132,7 +150,9 @@ export async function searchSpeakersByName(name: string): Promise<SpeakerMatch[]
     }));
   }
 
-  const response = await fetch(`/api/speakers?name=${encodeURIComponent(trimmed)}`);
+  const response = await fetch(
+    `/api/speakers?name=${encodeURIComponent(trimmed)}`,
+  );
   if (!response.ok) return [];
   const { speakers } = await response.json();
   return speakers as SpeakerMatch[];

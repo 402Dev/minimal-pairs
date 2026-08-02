@@ -32,9 +32,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       {
         exists: Boolean(row),
-        speaker: row ? { id: row.id, name: row.name, birthYear: row.birth_year } : null,
+        speaker: row
+          ? { id: row.id, name: row.name, birthYear: row.birth_year }
+          : null,
       },
-      { headers: CORS_HEADERS }
+      { headers: CORS_HEADERS },
     );
   }
 
@@ -49,13 +51,19 @@ export async function GET(request: NextRequest) {
       `SELECT id, name, birth_year FROM speakers
        WHERE lower(name) LIKE lower(?)
        ORDER BY created_at DESC
-       LIMIT 8`
+       LIMIT 8`,
     )
     .all(`%${name}%`) as { id: string; name: string; birth_year: string }[];
 
   return NextResponse.json(
-    { speakers: rows.map((r) => ({ id: r.id, name: r.name, birthYear: r.birth_year })) },
-    { headers: CORS_HEADERS }
+    {
+      speakers: rows.map((r) => ({
+        id: r.id,
+        name: r.name,
+        birthYear: r.birth_year,
+      })),
+    },
+    { headers: CORS_HEADERS },
   );
 }
 
@@ -66,39 +74,45 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    const { name, birthYear } = await request.json();
+    const { name, birthYear, dialect } = await request.json();
 
     if (!name || !birthYear) {
       return NextResponse.json(
         { error: "Missing required fields." },
-        { status: 400, headers: CORS_HEADERS }
+        { status: 400, headers: CORS_HEADERS },
       );
     }
 
     const db = getLocalDb();
     const existing = db
       .prepare(
-        `SELECT id FROM speakers WHERE lower(trim(name)) = lower(trim(?)) AND lower(trim(birth_year)) = lower(trim(?))`
+        `SELECT id FROM speakers WHERE lower(trim(name)) = lower(trim(?)) AND lower(trim(birth_year)) = lower(trim(?))`,
       )
       .get(name, birthYear) as { id: string } | undefined;
 
     if (existing) {
+      // Update local DB dialect for returning speaker
+      if (dialect) {
+        db.prepare(`UPDATE speakers SET dialect = ? WHERE id = ?`).run(
+          dialect,
+          existing.id,
+        );
+      }
       return NextResponse.json({ id: existing.id }, { headers: CORS_HEADERS });
     }
 
     const id = randomUUID();
-    db.prepare(`INSERT INTO speakers (id, name, birth_year) VALUES (?, ?, ?)`).run(
-      id,
-      name,
-      birthYear
-    );
+    // Update the INSERT statement to include dialect
+    db.prepare(
+      `INSERT INTO speakers (id, name, birth_year, dialect) VALUES (?, ?, ?, ?)`,
+    ).run(id, name, birthYear, dialect || null);
 
     return NextResponse.json({ id }, { headers: CORS_HEADERS });
   } catch (error) {
     console.error("Local speaker lookup/insert failed:", error);
     return NextResponse.json(
       { error: "Failed to create speaker." },
-      { status: 500, headers: CORS_HEADERS }
+      { status: 500, headers: CORS_HEADERS },
     );
   }
 }

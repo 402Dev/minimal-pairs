@@ -32,15 +32,22 @@ export default function SpeakerIntakeForm({
   const [name, setName] = useState("");
   const [birthYear, setBirthYear] = useState("");
   const [consent, setConsent] = useState(false);
+  const [dialect, setDialect] = useState("");
   const [matches, setMatches] = useState<SpeakerMatch[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Determine if this specific language demands a dialect choice
+  const needsDialect = Boolean(t.dialectOptions);
+
+  // Update canStart to check if dialect is selected (if required)
   const canStart =
     name.trim().length > 0 &&
     /^\d{2}$/.test(birthYear.trim()) &&
-    consent && // <-- Hard gate
+    consent &&
+    (!needsDialect || dialect !== "") && // <-- Gate start button on dialect
     !submitting;
+
   // Only show matches while the name field still qualifies for a lookup;
   // avoids clearing `matches` synchronously inside the effect below.
   const visibleMatches = name.trim().length >= 2 ? matches : [];
@@ -69,7 +76,7 @@ export default function SpeakerIntakeForm({
   }, [name]);
 
   const handlePickMatch = (speakerId: string) => {
-    setStoredSpeakerId(speakerId);
+    setStoredSpeakerId(language, speakerId); // <-- Pass language
     onComplete(speakerId);
   };
 
@@ -77,13 +84,13 @@ export default function SpeakerIntakeForm({
     if (!canStart) return;
     setSubmitting(true);
     setError(null);
-
     try {
       const speakerId = await findOrCreateSpeaker({
         name: name.trim(),
         birthYear: birthYear.trim(),
+        dialect: dialect || undefined,
       });
-      setStoredSpeakerId(speakerId);
+      setStoredSpeakerId(language, speakerId); // <-- Pass language
       onComplete(speakerId);
     } catch (err) {
       setError(err instanceof Error ? err.message : t.somethingWrong);
@@ -103,7 +110,7 @@ export default function SpeakerIntakeForm({
 
           <div className="space-y-6">
             <label className="block">
-              <span className="mb-1 block text-sm tracking-wider font-medium uppercase tracking-widest text-[#8C827A]">
+              <span className="mb-1 block text-sm tracking-wider font-medium uppercase text-[#8C827A]">
                 {t.yourName}
               </span>
               <input
@@ -163,6 +170,49 @@ export default function SpeakerIntakeForm({
                 className="w-full border-0 border-b-2 border-[#D8D2C9] dark:border-[#383330] bg-transparent py-2 text-2xl font-medium tracking-widest text-[#2C2825] dark:text-[#EDE8E1] placeholder-[#8C827A]/70 outline-none transition-colors duration-300 ease-out focus:border-[#2C2825] dark:focus:border-[#EDE8E1] disabled:opacity-40"
               />
             </label>
+            {/* CONDITIONAL DIALECT DROPDOWN */}
+            {needsDialect && t.dialectQuestion && t.dialectOptions && (
+              <label className="block">
+                <span className="mb-1 block text-sm font-medium uppercase tracking-wider text-[#8C827A]">
+                  {t.dialectQuestion}
+                </span>
+                <div className="relative">
+                  <select
+                    value={dialect}
+                    onChange={(e) => setDialect(e.target.value)}
+                    disabled={submitting}
+                    className="w-full appearance-none rounded-none border-0 border-b-2 border-[#D8D2C9] dark:border-[#383330] bg-transparent py-2 text-xl font-medium text-[#2C2825] dark:text-[#EDE8E1] outline-none transition-colors duration-300 ease-out focus:border-[#2C2825] dark:focus:border-[#EDE8E1] disabled:opacity-40">
+                    <option value="" disabled className="text-[#8C827A]">
+                      {t.dialectPlaceholder}
+                    </option>
+                    {Object.entries(t.dialectOptions).map(([key, label]) => (
+                      <option
+                        key={key}
+                        value={key}
+                        className="bg-[#FDFBF7] dark:bg-[#181615] text-base">
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                  {/* Custom dropdown chevron */}
+                  <div className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[#8C827A]">
+                    <svg
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </label>
+            )}
+
             <label className="flex items-start gap-3 pt-2 cursor-pointer group">
               <div className="relative flex h-5 items-center justify-center">
                 <input

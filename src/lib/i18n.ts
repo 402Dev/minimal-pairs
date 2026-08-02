@@ -29,6 +29,9 @@ export interface Translation {
   somethingWrong: string;
   notYou: (name: string) => string;
   consent: string;
+  dialectQuestion?: string;
+  dialectOptions?: Record<string, string>;
+  dialectPlaceholder?: string;
 }
 
 const english: Translation = {
@@ -118,6 +121,18 @@ const german: Translation = {
   notYou: (name) => `Nicht du, ${name}?`,
   consent:
     "Ich stimme zu, dass meine Aufnahmen verwendet werden können, um Schüler in einer Sprachlern-App zu schulen.",
+  dialectQuestion: "Dein Dialekt / Deine Region",
+  dialectOptions: {
+    hochdeutsch: "Hochdeutsch (Standard)",
+    bayerisch: "Bayerisch",
+    oesterreichisch: "Österreichisches Deutsch",
+    schweizerdeutsch: "Schweizerdeutsch",
+    schwaebisch: "Schwäbisch",
+    sachsaechsisch: "Sächsisch",
+    plattdeutsch: "Plattdeutsch",
+    andere: "Andere / Gemischt",
+  },
+  dialectPlaceholder: "Bitte wählen...",
 };
 
 const spanish: Translation = {

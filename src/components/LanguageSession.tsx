@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SpeakerIntakeForm from "@/components/SpeakerIntakeForm";
 import RecorderForm from "@/components/RecorderForm";
 import { clearStoredSpeakerId, getStoredSpeakerId } from "@/lib/session";
@@ -25,24 +25,25 @@ export default function LanguageSession({
   language,
   prompts,
 }: LanguageSessionProps) {
-  const storedSpeakerId = useSyncExternalStore(
-    subscribe,
-    getStoredSpeakerId,
-    getServerSnapshot,
+  const [storedSpeakerId, setStoredSpeakerIdState] = useState<string | null>(
+    null,
   );
+  const [isChecking, setIsChecking] = useState(true);
   const [newSpeakerId, setNewSpeakerId] = useState<string | null>(null);
-  const speakerId = newSpeakerId ?? storedSpeakerId;
 
+  const speakerId = newSpeakerId ?? storedSpeakerId;
   const [remainingPrompts, setRemainingPrompts] = useState<Prompt[] | null>(
     null,
   );
   const [speakerName, setSpeakerName] = useState<string | null>(null);
   const [initialCompletedCount, setInitialCompletedCount] = useState<number>(0);
 
-  // Shuffle once per speaker (seeded, so it's stable across reloads) rather
-  // than serving every visitor the same fixed sequence_order — otherwise
-  // minimal-pair "siblings" added back-to-back in the admin panel (e.g.
-  // خر/خار) always land right next to each other.
+  // Read language-specific storage on mount
+  useEffect(() => {
+    setStoredSpeakerIdState(getStoredSpeakerId(language));
+    setIsChecking(false);
+  }, [language]);
+
   const shuffledPrompts = useMemo(
     () =>
       speakerId ? seededShuffle(prompts, `${language}:${speakerId}`) : prompts,
@@ -50,7 +51,7 @@ export default function LanguageSession({
   );
 
   function handleInvalidSpeaker() {
-    clearStoredSpeakerId();
+    clearStoredSpeakerId(language); // <-- Pass language
     setNewSpeakerId(null);
     setRemainingPrompts(null);
     setSpeakerName(null);
@@ -63,8 +64,6 @@ export default function LanguageSession({
 
     (async () => {
       try {
-        // Run both lookups concurrently instead of one-after-the-other —
-        // halves the round-trip latency before the recorder can render.
         const [details, completedIds] = await Promise.all([
           getSpeakerDetails(speakerId),
           getCompletedPromptIds(speakerId),
@@ -75,8 +74,16 @@ export default function LanguageSession({
           handleInvalidSpeaker();
           return;
         }
+
+        // Fix #1: Calculate completed count ONLY for prompts in this language
+        const currentLangPromptIds = new Set(prompts.map((p) => p.id));
+        let completedForThisLang = 0;
+        completedIds.forEach((id) => {
+          if (currentLangPromptIds.has(id)) completedForThisLang++;
+        });
+
         setSpeakerName(details.name);
-        setInitialCompletedCount(completedIds.size);
+        setInitialCompletedCount(completedForThisLang);
         setRemainingPrompts(
           shuffledPrompts.filter((prompt) => !completedIds.has(prompt.id)),
         );
@@ -85,11 +92,16 @@ export default function LanguageSession({
         if (!cancelled) setRemainingPrompts(shuffledPrompts);
       }
     })();
-
     return () => {
       cancelled = true;
     };
-  }, [speakerId, shuffledPrompts]);
+  }, [speakerId, shuffledPrompts, prompts, language]);
+
+  if (isChecking) {
+    return (
+      <div className="min-h-dvh bg-[#FDFBF7] dark:bg-[#181615] transition-colors" />
+    );
+  }
 
   if (!speakerId) {
     return (
@@ -98,7 +110,9 @@ export default function LanguageSession({
   }
 
   if (!remainingPrompts) {
-    return <div className="min-h-dvh bg-white" />;
+    return (
+      <div className="min-h-dvh bg-[#FDFBF7] dark:bg-[#181615] transition-colors" />
+    );
   }
 
   return (
