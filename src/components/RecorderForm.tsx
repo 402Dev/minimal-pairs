@@ -150,7 +150,9 @@ export default function RecorderForm({
         onClick={onChangeUser}
         // dir="auto"
         className="absolute top-6 end-6 text-sm font-semibold text-[#8C827A] dark:text-[#D8D2C9] hover:text-[#2C2825] dark:hover:text-[#FFFFFF] transition-colors duration-300">
-        {typeof t.notYou === "function" ? t.notYou(speakerName) : t.notYou}
+        {typeof t.notYou === "function"
+          ? t.notYou(speakerName ?? "")
+          : t.notYou}
       </button>
       <div className="w-full max-w-xs">
         <div className="space-y-12">
