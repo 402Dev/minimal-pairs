@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FDFBF7;
-  --foreground: #2C2825;
+  --background: #fdfbf7;
+  --foreground: #2c2825;
 }
 
 @theme inline {
@@ -10,17 +10,22 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  /* Map the Tailwind serif class to your new font */
+  --font-serif: var(--font-lora);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #181615;
-    --foreground: #EDE8E1;
+    --foreground: #ede8e1;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+  /* Enhance global readability with a slightly taller line-height */
+  line-height: 1.6;
+  letter-spacing: -0.015em;
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 }

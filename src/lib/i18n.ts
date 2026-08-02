@@ -38,8 +38,10 @@ const english: Translation = {
   starting: "Starting…",
   allDone: "All done. Thank you.",
   noPromptsAvailable: (endonym) => `No words available for ${endonym}.`,
-  welcomeThankYou: (name) => `Welcome, ${name}. Thank you for sharing your voice.`,
-  recordedCount: (count) => `${count} ${count === 1 ? "recording" : "recordings"} so far`,
+  welcomeThankYou: (name) =>
+    `Welcome, ${name}. Thank you for sharing your voice.`,
+  recordedCount: (count) =>
+    `${count} ${count === 1 ? "recording" : "recordings"} so far`,
   tapToRecord: "Tap to record",
   recordingTapToStop: "Recording — tap to stop",
   saving: "Saving…",
@@ -63,8 +65,9 @@ const persian: Translation = {
   starting: "در حال شروع…",
   allDone: "تمام شد. سپاسگزاریم.",
   noPromptsAvailable: (endonym) => `هیچ واژه‌ای برای ${endonym} موجود نیست.`,
-  welcomeThankYou: (name) => `خوش آمدی ${name}. از اینکه صدایت را به اشتراک می‌گذاری سپاسگزاریم.`,
   recordedCount: (count) => `تاکنون ${count} ضبط`,
+  welcomeThankYou: (name) =>
+    `خوش آمدی \u2068${name}\u2069. از اینکه صدایت را به اشتراک می‌گذاری سپاسگزاریم.`,
   tapToRecord: "برای ضبط ضربه بزن",
   recordingTapToStop: "در حال ضبط — برای توقف ضربه بزن",
   saving: "در حال ذخیره…",
@@ -88,8 +91,10 @@ const german: Translation = {
   starting: "Wird gestartet…",
   allDone: "Fertig. Danke.",
   noPromptsAvailable: (endonym) => `Keine Wörter für ${endonym} verfügbar.`,
-  welcomeThankYou: (name) => `Willkommen, ${name}. Danke, dass du deine Stimme teilst.`,
-  recordedCount: (count) => `Bisher ${count} ${count === 1 ? "Aufnahme" : "Aufnahmen"}`,
+  welcomeThankYou: (name) =>
+    `Willkommen, ${name}. Danke, dass du deine Stimme teilst.`,
+  recordedCount: (count) =>
+    `Bisher ${count} ${count === 1 ? "Aufnahme" : "Aufnahmen"}`,
   tapToRecord: "Zum Aufnehmen tippen",
   recordingTapToStop: "Aufnahme läuft — zum Stoppen tippen",
   saving: "Wird gespeichert…",
@@ -112,9 +117,12 @@ const spanish: Translation = {
   start: "Empezar",
   starting: "Iniciando…",
   allDone: "Listo. Gracias.",
-  noPromptsAvailable: (endonym) => `No hay palabras disponibles para ${endonym}.`,
-  welcomeThankYou: (name) => `¡Bienvenido/a, ${name}! Gracias por compartir tu voz.`,
-  recordedCount: (count) => `${count} ${count === 1 ? "grabación" : "grabaciones"} hasta ahora`,
+  noPromptsAvailable: (endonym) =>
+    `No hay palabras disponibles para ${endonym}.`,
+  welcomeThankYou: (name) =>
+    `¡Bienvenido/a, ${name}! Gracias por compartir tu voz.`,
+  recordedCount: (count) =>
+    `${count} ${count === 1 ? "grabación" : "grabaciones"} hasta ahora`,
   tapToRecord: "Toca para grabar",
   recordingTapToStop: "Grabando — toca para detener",
   saving: "Guardando…",
@@ -138,8 +146,10 @@ const dutch: Translation = {
   starting: "Bezig met starten…",
   allDone: "Klaar. Bedankt.",
   noPromptsAvailable: (endonym) => `Geen woorden beschikbaar voor ${endonym}.`,
-  welcomeThankYou: (name) => `Welkom, ${name}. Bedankt voor het delen van je stem.`,
-  recordedCount: (count) => `${count} ${count === 1 ? "opname" : "opnames"} tot nu toe`,
+  welcomeThankYou: (name) =>
+    `Welkom, ${name}. Bedankt voor het delen van je stem.`,
+  recordedCount: (count) =>
+    `${count} ${count === 1 ? "opname" : "opnames"} tot nu toe`,
   tapToRecord: "Tik om op te nemen",
   recordingTapToStop: "Opname bezig — tik om te stoppen",
   saving: "Bezig met opslaan…",
@@ -159,7 +169,8 @@ function polishRecordingWord(count: number): string {
   if (count === 1) return "nagranie";
   const lastTwo = count % 100;
   const last = count % 10;
-  if (last >= 2 && last <= 4 && !(lastTwo >= 12 && lastTwo <= 14)) return "nagrania";
+  if (last >= 2 && last <= 4 && !(lastTwo >= 12 && lastTwo <= 14))
+    return "nagrania";
   return "nagrań";
 }
 
@@ -172,7 +183,8 @@ const polish: Translation = {
   starting: "Rozpoczynanie…",
   allDone: "Gotowe. Dziękujemy.",
   noPromptsAvailable: (endonym) => `Brak dostępnych słów dla ${endonym}.`,
-  welcomeThankYou: (name) => `Witaj, ${name}. Dziękujemy za udostępnienie swojego głosu.`,
+  welcomeThankYou: (name) =>
+    `Witaj, ${name}. Dziękujemy za udostępnienie swojego głosu.`,
   recordedCount: (count) => `${count} ${polishRecordingWord(count)} dotychczas`,
   tapToRecord: "Dotknij, aby nagrać",
   recordingTapToStop: "Nagrywanie — dotknij, aby zatrzymać",
