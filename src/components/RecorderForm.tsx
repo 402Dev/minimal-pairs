@@ -157,19 +157,26 @@ export default function RecorderForm({
       <div className="w-full max-w-xs">
         <div className="space-y-12">
           {/* Header area with soft gratitude greeting, stats, and low-contrast progress counter */}
-          <div className="space-y-3 text-center">
+          <div className="space-y-2 text-center">
             {speakerName && (
               <div className="space-y-0.5" dir="auto">
-                <p className="text-base font-medium text-[#8C827A] dark:text-[#EDE8E1]/80">
+                {/*
+        Clean, readable, single line.
+        High contrast text color so it's readable,
+        but normal size/weight so it doesn't fight the prompt.
+      */}
+                <p className="text-base font-medium text-[#2C2825] dark:text-[#EDE8E1]">
                   {t.welcomeThankYou(speakerName)}
                 </p>
-                <p className="text-sm font-medium text-[#8C827A]/80 dark:text-[#EDE8E1]/50">
+
+                <p className="text-xs font-normal text-[#8C827A] dark:text-[#8C827A]">
                   {t.recordedCount(completedCount)}
                 </p>
               </div>
             )}
+
             <div>
-              <span className="text-sm font-bold uppercase tracking-widest text-[#8C827A] dark:text-[#D8D2C9]">
+              <span className="text-xs font-semibold uppercase tracking-widest text-[#8C827A]">
                 {t.endonym} • {currentPromptIndex + 1} / {prompts.length}
               </span>
             </div>
