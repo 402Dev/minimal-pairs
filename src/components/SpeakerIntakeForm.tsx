@@ -31,12 +31,16 @@ export default function SpeakerIntakeForm({
   const t = getTranslation(language);
   const [name, setName] = useState("");
   const [birthYear, setBirthYear] = useState("");
+  const [consent, setConsent] = useState(false);
   const [matches, setMatches] = useState<SpeakerMatch[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const canStart =
-    name.trim().length > 0 && /^\d{2}$/.test(birthYear.trim()) && !submitting;
+    name.trim().length > 0 &&
+    /^\d{2}$/.test(birthYear.trim()) &&
+    consent && // <-- Hard gate
+    !submitting;
   // Only show matches while the name field still qualifies for a lookup;
   // avoids clearing `matches` synchronously inside the effect below.
   const visibleMatches = name.trim().length >= 2 ? matches : [];
@@ -158,6 +162,35 @@ export default function SpeakerIntakeForm({
                 spellCheck={false}
                 className="w-full border-0 border-b-2 border-[#D8D2C9] dark:border-[#383330] bg-transparent py-2 text-2xl font-medium tracking-widest text-[#2C2825] dark:text-[#EDE8E1] placeholder-[#8C827A]/70 outline-none transition-colors duration-300 ease-out focus:border-[#2C2825] dark:focus:border-[#EDE8E1] disabled:opacity-40"
               />
+            </label>
+            <label className="flex items-start gap-3 pt-2 cursor-pointer group">
+              <div className="relative flex h-5 items-center justify-center">
+                <input
+                  type="checkbox"
+                  checked={consent}
+                  onChange={(e) => setConsent(e.target.checked)}
+                  disabled={submitting}
+                  className="peer h-4 w-4 appearance-none rounded-sm border border-[#D8D2C9] dark:border-[#383330] checked:bg-[#2C2825] dark:checked:bg-[#EDE8E1] transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2C2825] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#181615]"
+                />
+                {/* Custom checkmark SVG that only shows when the peer is checked */}
+                <svg
+                  className="pointer-events-none absolute h-3 w-3 text-[#FDFBF7] dark:text-[#181615] opacity-0 peer-checked:opacity-100 transition-opacity"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={3}>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+              <span
+                className="text-xs leading-relaxed text-[#8C827A] group-hover:text-[#2C2825] dark:group-hover:text-[#EDE8E1] transition-colors"
+                dir="auto">
+                {t.consent}
+              </span>
             </label>
           </div>
 
